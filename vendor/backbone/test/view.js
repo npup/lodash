@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 $(document).ready(function() {
+=======
+(function() {
+>>>>>>> upstream/master
 
   var view;
 
@@ -14,6 +18,7 @@ $(document).ready(function() {
 
   });
 
+<<<<<<< HEAD
   test("constructor", 6, function() {
     equal(view.el.id, 'test-view');
     equal(view.el.className, 'test-view');
@@ -21,6 +26,12 @@ $(document).ready(function() {
     equal(view.options.id, 'test-view');
     equal(view.options.className, 'test-view');
     equal(view.options.other, 'non-special-option');
+=======
+  test("constructor", 3, function() {
+    equal(view.el.id, 'test-view');
+    equal(view.el.className, 'test-view');
+    equal(view.el.other, void 0);
+>>>>>>> upstream/master
   });
 
   test("jQuery", 1, function() {
@@ -29,6 +40,7 @@ $(document).ready(function() {
     strictEqual(view.$('a b').html(), 'test');
   });
 
+<<<<<<< HEAD
   test("make", 3, function() {
     var div = view.make('div', {id: 'test-div'}, "one two three");
 
@@ -45,6 +57,8 @@ $(document).ready(function() {
     equal($(div).text(), '');
   });
 
+=======
+>>>>>>> upstream/master
   test("initialize", 1, function() {
     var View = Backbone.View.extend({
       initialize: function() {
@@ -101,6 +115,16 @@ $(document).ready(function() {
     equal(view.counter, 3);
   });
 
+<<<<<<< HEAD
+=======
+
+  test("delegateEvents ignore undefined methods", 0, function() {
+    var view = new Backbone.View({el: '<p></p>'});
+    view.delegateEvents({'click': 'undefinedMethod'});
+    view.$el.trigger('click');
+  });
+
+>>>>>>> upstream/master
   test("undelegateEvents", 6, function() {
     var counter1 = 0, counter2 = 0;
 
@@ -286,6 +310,7 @@ $(document).ready(function() {
     ok(new View().$el.is('p'));
   });
 
+<<<<<<< HEAD
   test("dispose", 0, function() {
     var View = Backbone.View.extend({
       events: {
@@ -294,6 +319,13 @@ $(document).ready(function() {
       initialize: function() {
         this.model.on('all x', function(){ ok(false); }, this);
         this.collection.on('all x', function(){ ok(false); }, this);
+=======
+  test("views stopListening", 0, function() {
+    var View = Backbone.View.extend({
+      initialize: function() {
+        this.listenTo(this.model, 'all x', function(){ ok(false); }, this);
+        this.listenTo(this.collection, 'all x', function(){ ok(false); }, this);
+>>>>>>> upstream/master
       }
     });
 
@@ -302,6 +334,7 @@ $(document).ready(function() {
       collection: new Backbone.Collection
     });
 
+<<<<<<< HEAD
     view.dispose();
     view.model.trigger('x');
     view.collection.trigger('x');
@@ -321,6 +354,14 @@ $(document).ready(function() {
   });
 
   test("Provide function for el.", 1, function() {
+=======
+    view.stopListening();
+    view.model.trigger('x');
+    view.collection.trigger('x');
+  });
+
+  test("Provide function for el.", 2, function() {
+>>>>>>> upstream/master
     var View = Backbone.View.extend({
       el: function() {
         return "<p><a></a></p>";
@@ -328,7 +369,39 @@ $(document).ready(function() {
     });
 
     var view = new View;
+<<<<<<< HEAD
     ok(view.$el.is('p:has(a)'));
   });
 
 });
+=======
+    ok(view.$el.is('p'));
+    ok(view.$el.has('a'));
+  });
+
+  test("events passed in options", 2, function() {
+    var counter = 0;
+
+    var View = Backbone.View.extend({
+      el: '<p><a id="test"></a></p>',
+      increment: function() {
+        counter++;
+      }
+    });
+
+    var view = new View({events:{'click #test':'increment'}});
+    var view2 = new View({events:function(){
+      return {'click #test':'increment'};
+    }});
+
+    view.$('#test').trigger('click');
+    view2.$('#test').trigger('click');
+    equal(counter, 2);
+
+    view.$('#test').trigger('click');
+    view2.$('#test').trigger('click');
+    equal(counter, 4);
+  });
+
+})();
+>>>>>>> upstream/master

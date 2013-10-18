@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 $(document).ready(function() {
+=======
+(function() {
+>>>>>>> upstream/master
 
   module("Backbone.noConflict");
 
@@ -9,4 +13,8 @@ $(document).ready(function() {
     equal(window.Backbone, noconflictBackbone, 'Backbone is still pointing to the original Backbone');
   });
 
+<<<<<<< HEAD
 });
+=======
+})();
+>>>>>>> upstream/master

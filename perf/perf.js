@@ -1,5 +1,6 @@
 (function(window) {
 
+<<<<<<< HEAD
   /** Use a single load function */
   var load = typeof require == 'function' ? require : window.load;
 
@@ -24,16 +25,77 @@
       _ = load('../vendor/underscore/underscore.js') || window._,
       _._ || _
     );
+=======
+  /** Use a single "load" function */
+  var load = typeof require == 'function' ? require : window.load;
+
+  /** The file path of the Lo-Dash file to test */
+  var filePath = (function() {
+    var min = 0;
+    var result = window.phantom
+      ? phantom.args
+      : (window.system
+          ? (min = 1, system.args)
+          : (window.process ? (min = 2, process.argv) : (window.arguments || []))
+        );
+
+    var last = result[result.length - 1];
+    result = (result.length > min && !/perf(?:\.js)?$/.test(last))
+      ? last
+      : '../lodash.js';
+
+    try {
+      result = require('fs').realpathSync(result);
+    } catch(e) { }
+
+    return result;
+  }());
+
+  /** Load Lo-Dash */
+  var lodash = window.lodash || (window.lodash = (
+    lodash = load(filePath) || window._,
+    lodash = lodash._ || lodash,
+    lodash.noConflict()
+  ));
+
+  /** Load Benchmark.js */
+  var Benchmark = window.Benchmark || (window.Benchmark = (
+    Benchmark = load('../vendor/benchmark.js/benchmark.js') || window.Benchmark,
+    Benchmark = Benchmark.Benchmark || Benchmark,
+    Benchmark.runInContext(lodash.extend({}, window, { '_': lodash }))
+  ));
+
+  /** Load Underscore */
+  var _ = window._ || (window._ = (
+    _ = load('../vendor/underscore/underscore.js') || window._,
+    _._ || _
+  ));
+>>>>>>> upstream/master
 
   /** Used to access the Firebug Lite panel (set by `run`) */
   var fbPanel;
 
+<<<<<<< HEAD
   /** Used to score performance */
   var score = { 'a': 0, 'b': 0 };
+=======
+  /** Used to match path separators */
+  var rePathSeparator = /[\/\\]/;
+
+  /** Used to detect primitive types */
+  var rePrimitive = /^(?:boolean|number|string|undefined)$/;
+
+  /** Used to match RegExp special characters */
+  var reSpecialChars = /[.*+?^=!:${}()|[\]\/\\]/g;
+
+  /** Used to score performance */
+  var score = { 'a': [], 'b': [] };
+>>>>>>> upstream/master
 
   /** Used to queue benchmark suites */
   var suites = [];
 
+<<<<<<< HEAD
   /** The `ui` object */
   var ui = window.ui || {};
 
@@ -50,6 +112,34 @@
   window._ = _;
   window.Benchmark = Benchmark;
   window.lodash = lodash;
+=======
+  /** Used to resolve a value's internal [[Class]] */
+  var toString = Object.prototype.toString;
+
+  /** The `ui` object */
+  var ui = window.ui || (window.ui = {
+    'buildPath': basename(filePath, '.js'),
+    'otherPath': 'underscore'
+  });
+
+  /** The Lo-Dash build basename */
+  var buildName = window.buildName = basename(ui.buildPath, '.js');
+
+  /** The other library basename */
+  var otherName = window.otherName = (function() {
+    var result = basename(ui.otherPath, '.js');
+    return result + (result == buildName ? ' (2)' : '');
+  }());
+
+  /** Detect if in a browser environment */
+  var isBrowser = isHostType(window, 'document') && isHostType(window, 'navigator');
+
+  /** Detect Java environment */
+  var isJava = !isBrowser && /Java/.test(toString.call(window.java));
+
+  /** Add `console.log()` support for Narwhal, Rhino, and RingoJS */
+  var console = window.console || (window.console = { 'log': window.print });
+>>>>>>> upstream/master
 
   /*--------------------------------------------------------------------------*/
 
@@ -58,6 +148,7 @@
    * it will be removed from the basename.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} path The file path to inspect.
    * @param {String} extension The extension to remove.
    * @returns {String} Returns the basename.
@@ -67,6 +158,31 @@
     return arguments.length < 2
       ? result
       : result.replace(RegExp(extension.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&') + '$'), '');
+=======
+   * @param {string} path The file path to inspect.
+   * @param {string} extension The extension to remove.
+   * @returns {string} Returns the basename.
+   */
+  function basename(filePath, extension) {
+    var result = (filePath || '').split(rePathSeparator).pop();
+    return (arguments.length < 2)
+      ? result
+      : result.replace(RegExp(extension.replace(reSpecialChars, '\\$&') + '$'), '');
+  }
+
+  /**
+   * Computes the geometric mean (log-average) of an array of values.
+   * See http://en.wikipedia.org/wiki/Geometric_mean#Relationship_with_arithmetic_mean_of_logarithms.
+   *
+   * @private
+   * @param {Array} array The array of values.
+   * @returns {number} The geometric mean.
+   */
+  function getGeometricMean(array) {
+    return Math.pow(Math.E, lodash.reduce(array, function(sum, x) {
+      return sum + Math.log(x);
+    }, 0) / array.length) || 0;
+>>>>>>> upstream/master
   }
 
   /**
@@ -75,17 +191,47 @@
    *
    * @private
    * @param {Object} bench The benchmark object.
+<<<<<<< HEAD
    * @returns {Number} Returns the adjusted Hz.
    */
   function getHz(bench) {
     return 1 / (bench.stats.mean + bench.stats.moe);
+=======
+   * @returns {number} Returns the adjusted Hz.
+   */
+  function getHz(bench) {
+    var result = 1 / (bench.stats.mean + bench.stats.moe);
+    return isFinite(result) ? result : 0;
+  }
+
+  /**
+   * Host objects can return type values that are different from their actual
+   * data type. The objects we are concerned with usually return non-primitive
+   * types of "object", "function", or "unknown".
+   *
+   * @private
+   * @param {*} object The owner of the property.
+   * @param {string} property The property to check.
+   * @returns {boolean} Returns `true` if the property value is a non-primitive, else `false`.
+   */
+  function isHostType(object, property) {
+    if (object == null) {
+      return false;
+    }
+    var type = typeof object[property];
+    return !rePrimitive.test(type) && (type != 'object' || !!object[property]);
+>>>>>>> upstream/master
   }
 
   /**
    * Logs text to the console.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} text The text to log.
+=======
+   * @param {string} text The text to log.
+>>>>>>> upstream/master
    */
   function log(text) {
     console.log(text + '');
@@ -106,7 +252,11 @@
       fbPanel.getElementById('fbPanel1');
 
     log('\nSit back and relax, this may take a while.');
+<<<<<<< HEAD
     suites[0].run();
+=======
+    suites[0].run({ 'async': !isJava });
+>>>>>>> upstream/master
   }
 
   /*--------------------------------------------------------------------------*/
@@ -119,6 +269,7 @@
       log(event.target);
     },
     'onComplete': function() {
+<<<<<<< HEAD
       var formatNumber = Benchmark.formatNumber,
           fastest = this.filter('fastest'),
           fastestHz = getHz(fastest[0]),
@@ -144,11 +295,49 @@
       score.a += aHz;
       score.b += bHz;
 
+=======
+      for (var index = 0, length = this.length; index < length; index++) {
+        var bench = this[index];
+        if (bench.error) {
+          var errored = true;
+        }
+      }
+      if (errored) {
+        log('There was a problem, skipping...');
+      }
+      else {
+        var formatNumber = Benchmark.formatNumber,
+            fastest = this.filter('fastest'),
+            fastestHz = getHz(fastest[0]),
+            slowest = this.filter('slowest'),
+            slowestHz = getHz(slowest[0]),
+            aHz = getHz(this[0]),
+            bHz = getHz(this[1]);
+
+        if (fastest.length > 1) {
+          log('It\'s too close to call.');
+          aHz = bHz = slowestHz;
+        }
+        else {
+          var percent = ((fastestHz / slowestHz) - 1) * 100;
+
+          log(
+            fastest[0].name + ' is ' +
+            formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) +
+            '% faster.'
+          );
+        }
+        // add score adjusted for margin of error
+        score.a.push(aHz);
+        score.b.push(bHz);
+      }
+>>>>>>> upstream/master
       // remove current suite from queue
       suites.shift();
 
       if (suites.length) {
         // run next suite
+<<<<<<< HEAD
         suites[0].run();
       }
       else {
@@ -160,6 +349,21 @@
 
         // report results
         if (score.a >= score.b) {
+=======
+        suites[0].run({ 'async': !isJava });
+      }
+      else {
+        var aMeanHz = getGeometricMean(score.a),
+            bMeanHz = getGeometricMean(score.b),
+            fastestMeanHz = Math.max(aMeanHz, bMeanHz),
+            slowestMeanHz = Math.min(aMeanHz, bMeanHz),
+            xFaster = fastestMeanHz / slowestMeanHz,
+            percentFaster = formatNumber(Math.round((xFaster - 1) * 100)),
+            message = 'is ' + percentFaster + '% ' + (xFaster == 1 ? '' : '(' + formatNumber(xFaster.toFixed(2)) + 'x) ') + 'faster than';
+
+        // report results
+        if (aMeanHz >= bMeanHz) {
+>>>>>>> upstream/master
           log('\n' + buildName + ' ' + message + ' ' + otherName + '.');
         } else {
           log('\n' + otherName + ' ' + message + ' ' + buildName + '.');
@@ -173,10 +377,16 @@
   lodash.extend(Benchmark.options, {
     'async': true,
     'setup': '\
+<<<<<<< HEAD
       var window = Function("return this || global")(),\
           _ = window._,\
           lodash = window.lodash,\
           belt = this.name == "Lo-Dash" ? lodash : _;\
+=======
+      var _ = window._,\
+          lodash = window.lodash,\
+          belt = this.name == buildName ? lodash : _;\
+>>>>>>> upstream/master
       \
       var index,\
           date = new Date,\
@@ -187,7 +397,12 @@
           numbers = Array(limit),\
           fourNumbers = [5, 25, 10, 30],\
           nestedNumbers = [1, [2], [3, [[4]]]],\
+<<<<<<< HEAD
           twoNumbers = [12, 21];\
+=======
+          nestedObjects = [{}, [{}], [{}, [[{}]]]],\
+          twoNumbers = [12, 23];\
+>>>>>>> upstream/master
       \
       for (index = 0; index < limit; index++) {\
         numbers[index] = index;\
@@ -196,13 +411,18 @@
       }\
       \
       if (typeof bind != "undefined") {\
+<<<<<<< HEAD
         var contextObject = { "name": "moe" },\
+=======
+        var thisArg = { "name": "moe" },\
+>>>>>>> upstream/master
             ctor = function() {};\
         \
         var func = function(greeting, punctuation) {\
           return greeting + ", " + this.name + (punctuation || ".");\
         };\
         \
+<<<<<<< HEAD
         var lodashBoundNormal = lodash.bind(func, contextObject),\
             lodashBoundCtor = lodash.bind(ctor, contextObject),\
             lodashBoundPartial = lodash.bind(func, contextObject, "hi");\
@@ -215,15 +435,49 @@
       if (typeof bindAll != "undefined") {\
         var bindAllObjects = Array(this.count),\
             funcNames = belt.functions(lodash);\
+=======
+        var _boundNormal = _.bind(func, thisArg),\
+            _boundMultiple = _boundNormal,\
+            _boundPartial = _.bind(func, thisArg, "hi");\
+        \
+        var lodashBoundNormal = lodash.bind(func, thisArg),\
+            lodashBoundMultiple = lodashBoundNormal,\
+            lodashBoundPartial = lodash.bind(func, thisArg, "hi");\
+        \
+        for (index = 0; index < 10; index++) {\
+          _boundMultiple = _.bind(_boundMultiple, { "name": "moe" + index });\
+          lodashBoundMultiple = lodash.bind(lodashBoundMultiple, { "name": "moe" + index });\
+        }\
+      }\
+      \
+      if (typeof bindAll != "undefined") {\
+        var bindAllCount = -1,\
+            bindAllObjects = Array(this.count);\
+        \
+        var funcNames = belt.reject(belt.functions(belt).slice(0, 40), function(funcName) {\
+          return /^_/.test(funcName);\
+        });\
+>>>>>>> upstream/master
         \
         // potentially expensive\n\
         for (index = 0; index < this.count; index++) {\
           bindAllObjects[index] = belt.reduce(funcNames, function(object, funcName) {\
+<<<<<<< HEAD
             object[funcName] = lodash[funcName];\
+=======
+            object[funcName] = belt[funcName];\
+>>>>>>> upstream/master
             return object;\
           }, {});\
         }\
       }\
+<<<<<<< HEAD
+=======
+      if (typeof chaining != "undefined") {\
+        var _chaining = _.chain ? _(numbers).chain() : _(numbers),\
+            lodashChaining = lodash(numbers);\
+      }\
+>>>>>>> upstream/master
       if (typeof compact != "undefined") {\
         var uncompacted = numbers.slice();\
         uncompacted[2] = false;\
@@ -294,16 +548,32 @@
         var object2 = {},\
             objects2 = Array(limit),\
             numbers2 = Array(limit),\
+<<<<<<< HEAD
             nestedNumbers2 = [1, [2], [3, [[4]]]];\
         \
         for (index = 0; index < limit; index++) {\
           numbers2[index] = index;\
           object2["key" + index] = index;\
           objects2[index] = { "num": index };\
+=======
+            nestedNumbers2 = [1, [2], [3, [[4]]]],\
+            nestedNumbers3 = [1, [2], [5, [[6]]]],\
+            simpleObject = { "a": 1 },\
+            simpleObject2 = { "a": 2 },\
+            simpleObjects = [simpleObject],\
+            simpleObjects2 = [simpleObject2],\
+            twoNumbers2 = [18, 27];\
+        \
+        for (index = 0; index < limit; index++) {\
+          object2["key" + index] = index;\
+          objects2[index] = { "num": index };\
+          numbers2[index] = index;\
+>>>>>>> upstream/master
         }\
       }\
       \
       if (typeof multiArrays != "undefined") {\
+<<<<<<< HEAD
         var twentyFiveValues = Array(25),\
             twentyFiveValues2 = Array(25),\
             fiftyValues = Array(50),\
@@ -332,6 +602,80 @@
             }\
             seventyFiveValues[index] = index;\
             seventyFiveValues2[index] = index + (index < 60 ? 75 : 0);\
+=======
+        var twentyValues = Array(20),\
+            twentyValues2 = Array(20),\
+            twentyFiveValues = Array(25),\
+            twentyFiveValues2 = Array(25),\
+            thirtyValues = Array(30),\
+            thirtyValues2 = Array(30),\
+            fortyValues = Array(40),\
+            fortyValues2 = Array(40),\
+            fiftyValues = Array(50),\
+            fiftyValues2 = Array(50),\
+            seventyFiveValues = Array(75),\
+            seventyFiveValues2 = Array(75),\
+            oneHundredValues = Array(100),\
+            oneHundredValues2 = Array(100),\
+            twoHundredValues = Array(200),\
+            twoHundredValues2 = Array(200),\
+            lowerChars = "abcdefghijklmnopqrstuvwxyz".split(""),\
+            upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");\
+        \
+        for (index = 0; index < 200; index++) {\
+          if (index < 15) {\
+            twentyValues[index] = lowerChars[index];\
+            twentyValues2[index] = upperChars[index];\
+          }\
+          if (index < 20) {\
+            twentyValues[index] =\
+            twentyValues2[index] = index;\
+            \
+            twentyFiveValues[index] = lowerChars[index];\
+            twentyFiveValues2[index] = upperChars[index];\
+          }\
+          if (index < 25) {\
+            twentyFiveValues[index] =\
+            twentyFiveValues2[index] = index;\
+            \
+            thirtyValues[index] =\
+            fortyValues[index] =\
+            fiftyValues[index] =\
+            seventyFiveValues[index] =\
+            oneHundredValues[index] =\
+            twoHundredValues[index] = lowerChars[index];\
+            \
+            thirtyValues2[index] =\
+            fortyValues2[index] =\
+            fiftyValues2[index] =\
+            seventyFiveValues2[index] =\
+            oneHundredValues2[index] =\
+            twoHundredValues2[index] = upperChars[index];\
+          }\
+          else {\
+            if (index < 30) {\
+              thirtyValues[index] =\
+              thirtyValues2[index] = index;\
+            }\
+            if (index < 40) {\
+              fortyValues[index] =\
+              fortyValues2[index] = index;\
+            }\
+            if (index < 50) {\
+              fiftyValues[index] =\
+              fiftyValues2[index] = index;\
+            }\
+            if (index < 75) {\
+              seventyFiveValues[index] =\
+              seventyFiveValues2[index] = index;\
+            }\
+            if (index < 100) {\
+              oneHundredValues[index] =\
+              oneHundredValues2[index] = index;\
+            }\
+            twoHundredValues[index] =\
+            twoHundredValues2[index] = index;\
+>>>>>>> upstream/master
           }\
         }\
       }\
@@ -347,13 +691,18 @@
           "list": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]\
         };\
         \
+<<<<<<< HEAD
         var tplBase =\
+=======
+        var tpl =\
+>>>>>>> upstream/master
           "<div>" +\
           "<h1 class=\'header1\'><%= header1 %></h1>" +\
           "<h2 class=\'header2\'><%= header2 %></h2>" +\
           "<h3 class=\'header3\'><%= header3 %></h3>" +\
           "<h4 class=\'header4\'><%= header4 %></h4>" +\
           "<h5 class=\'header5\'><%= header5 %></h5>" +\
+<<<<<<< HEAD
           "<h6 class=\'header6\'><%= header6 %></h6>";\
         \
         var tpl =\
@@ -374,6 +723,9 @@
         \
         var tplWithEvaluate =\
           tplBase +\
+=======
+          "<h6 class=\'header6\'><%= header6 %></h6>" +\
+>>>>>>> upstream/master
           "<ul class=\'list\'>" +\
           "<% for (var index = 0, length = list.length; index < length; index++) { %>" +\
           "<li class=\'item\'><%= list[index] %></li>" +\
@@ -381,13 +733,18 @@
           "</ul>" +\
           "</div>";\
         \
+<<<<<<< HEAD
         var tplBaseVerbose =\
+=======
+        var tplVerbose =\
+>>>>>>> upstream/master
           "<div>" +\
           "<h1 class=\'header1\'><%= data.header1 %></h1>" +\
           "<h2 class=\'header2\'><%= data.header2 %></h2>" +\
           "<h3 class=\'header3\'><%= data.header3 %></h3>" +\
           "<h4 class=\'header4\'><%= data.header4 %></h4>" +\
           "<h5 class=\'header5\'><%= data.header5 %></h5>" +\
+<<<<<<< HEAD
           "<h6 class=\'header6\'><%= data.header6 %></h6>";\
         \
         var tplVerbose =\
@@ -408,6 +765,9 @@
         \
         var tplVerboseWithEvaluate =\
           tplBaseVerbose +\
+=======
+          "<h6 class=\'header6\'><%= data.header6 %></h6>" +\
+>>>>>>> upstream/master
           "<ul class=\'list\'>" +\
           "<% for (var index = 0, length = data.list.length; index < length; index++) { %>" +\
           "<li class=\'item\'><%= data.list[index] %></li>" +\
@@ -417,6 +777,7 @@
         \
         var settingsObject = { "variable": "data" };\
         \
+<<<<<<< HEAD
         var lodashTpl = lodash.template(tpl),\
             lodashTplWithEvaluate = lodash.template(tplWithEvaluate),\
             lodashTplVerbose = lodash.template(tplVerbose, null, settingsObject),\
@@ -426,12 +787,28 @@
             _tplWithEvaluate = _.template(tplWithEvaluate),\
             _tplVerbose = _.template(tplVerbose, null, settingsObject),\
             _tplVerboseWithEvaluate = _.template(tplVerboseWithEvaluate, null, settingsObject);\
+=======
+        var _tpl = _.template(tpl),\
+            _tplVerbose = _.template(tplVerbose, null, settingsObject);\
+        \
+        var lodashTpl = lodash.template(tpl),\
+            lodashTplVerbose = lodash.template(tplVerbose, null, settingsObject);\
+      }\
+      if (typeof where != "undefined") {\
+        var _findWhere = _.findWhere || _.find,\
+            lodashFindWhere = lodash.findWhere || lodash.find,\
+            whereObject = { "num": 9 };\
+      }\
+      if (typeof zip != "undefined") {\
+        var unzipped = [["a", "b", "c"], [1, 2, 3], [true, false, true]];\
+>>>>>>> upstream/master
       }'
   });
 
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.bind` (uses native `Function#bind` if available and inferred fast)')
       .add(buildName, {
         'fn': 'lodash.bind(func, { "name": "moe" }, "hi")',
@@ -439,6 +816,62 @@
       })
       .add(otherName, {
         'fn': '_.bind(func, { "name": "moe" }, "hi")',
+=======
+    Benchmark.Suite('`_(...)` with a number')
+      .add(buildName, '\
+        lodash(2)'
+      )
+      .add(otherName, '\
+        _(2)'
+      )
+  );
+
+  suites.push(
+    Benchmark.Suite('`_(...)` with an array')
+      .add(buildName, '\
+        lodash(numbers)'
+      )
+      .add(otherName, '\
+        _(numbers)'
+      )
+  );
+
+  suites.push(
+    Benchmark.Suite('`_(...)` with an object')
+      .add(buildName, '\
+        lodash(object)'
+      )
+      .add(otherName, '\
+        _(object)'
+      )
+  );
+
+  // avoid Underscore induced `OutOfMemoryError` in Rhino, Narwhal, and Ringo
+  if (!isJava) {
+    suites.push(
+      Benchmark.Suite('`_(...).tap(...)`')
+        .add(buildName, {
+          'fn': 'lodashChaining.tap(lodash.identity)',
+          'teardown': 'function chaining(){}'
+        })
+        .add(otherName, {
+          'fn':  '_chaining.tap(_.identity)',
+          'teardown': 'function chaining(){}'
+        })
+    );
+  }
+
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+    Benchmark.Suite('`_.bind` (uses native `Function#bind` if available and inferred fast)')
+      .add(buildName, {
+        'fn': 'lodash.bind(func, { "name": "moe" })',
+        'teardown': 'function bind(){}'
+      })
+      .add(otherName, {
+        'fn': '_.bind(func, { "name": "moe" })',
+>>>>>>> upstream/master
         'teardown': 'function bind(){}'
       })
   );
@@ -492,6 +925,7 @@
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('bound and called in a `new` expression, i.e. `new bound` (edge case)')
       .add(buildName, {
         'fn': 'new lodashBoundCtor()',
@@ -499,6 +933,15 @@
       })
       .add(otherName, {
         'fn': 'new _boundCtor()',
+=======
+    Benchmark.Suite('bound multiple times')
+      .add(buildName, {
+        'fn': 'lodashBoundMultiple()',
+        'teardown': 'function bind(){}'
+      })
+      .add(otherName, {
+        'fn': '_boundMultiple()',
+>>>>>>> upstream/master
         'teardown': 'function bind(){}'
       })
   );
@@ -508,11 +951,19 @@
   suites.push(
     Benchmark.Suite('`_.bindAll` iterating arguments')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.bindAll.apply(lodash, [bindAllObjects.pop()].concat(funcNames))',
         'teardown': 'function bindAll(){}'
       })
       .add(otherName, {
         'fn': '_.bindAll.apply(_, [bindAllObjects.pop()].concat(funcNames))',
+=======
+        'fn': 'lodash.bindAll.apply(lodash, [bindAllObjects[++bindAllCount]].concat(funcNames))',
+        'teardown': 'function bindAll(){}'
+      })
+      .add(otherName, {
+        'fn': '_.bindAll.apply(_, [bindAllObjects[++bindAllCount]].concat(funcNames))',
+>>>>>>> upstream/master
         'teardown': 'function bindAll(){}'
       })
   );
@@ -520,11 +971,19 @@
   suites.push(
     Benchmark.Suite('`_.bindAll` iterating the `object`')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.bindAll(bindAllObjects.pop())',
         'teardown': 'function bindAll(){}'
       })
       .add(otherName, {
         'fn': '_.bindAll(bindAllObjects.pop())',
+=======
+        'fn': 'lodash.bindAll(bindAllObjects[++bindAllCount])',
+        'teardown': 'function bindAll(){}'
+      })
+      .add(otherName, {
+        'fn': '_.bindAll(bindAllObjects[++bindAllCount])',
+>>>>>>> upstream/master
         'teardown': 'function bindAll(){}'
       })
   );
@@ -560,20 +1019,34 @@
   suites.push(
     Benchmark.Suite('`_.contains` iterating an array')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.contains(numbers, 19)'
       )
       .add(otherName, '\
         _.contains(numbers, 19)'
+=======
+        lodash.contains(numbers, limit - 1)'
+      )
+      .add(otherName, '\
+        _.contains(numbers, limit - 1)'
+>>>>>>> upstream/master
       )
   );
 
   suites.push(
     Benchmark.Suite('`_.contains` iterating an object')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.contains(object, 19)'
       )
       .add(otherName, '\
         _.contains(object, 19)'
+=======
+        lodash.contains(object, limit - 1)'
+      )
+      .add(otherName, '\
+        _.contains(object, limit - 1)'
+>>>>>>> upstream/master
       )
   );
 
@@ -630,14 +1103,22 @@
   suites.push(
     Benchmark.Suite('`_.difference`')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.difference(numbers, fourNumbers, twoNumbers)'
       )
       .add(otherName, '\
         _.difference(numbers, fourNumbers, twoNumbers)'
+=======
+        lodash.difference(numbers, twoNumbers, fourNumbers)'
+      )
+      .add(otherName, '\
+        _.difference(numbers, twoNumbers, fourNumbers)'
+>>>>>>> upstream/master
       )
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.difference` iterating 25 elements')
       .add(buildName, {
         'fn': 'lodash.difference(twentyFiveValues, twentyFiveValues2)',
@@ -645,23 +1126,7 @@
       })
       .add(otherName, {
         'fn': '_.difference(twentyFiveValues, twentyFiveValues2)',
-        'teardown': 'function multiArrays(){}'
-      })
-  );
-
-  suites.push(
-    Benchmark.Suite('`_.difference` iterating 50 and 75 elements')
-      .add(buildName, {
-        'fn': 'lodash.difference(fiftyValues, seventyFiveValues2)',
-        'teardown': 'function multiArrays(){}'
-      })
-      .add(otherName, {
-        'fn': '_.difference(fiftyValues, seventyFiveValues2)',
-        'teardown': 'function multiArrays(){}'
-      })
-  );
-
-  suites.push(
+=======
     Benchmark.Suite('`_.difference` iterating 75 elements')
       .add(buildName, {
         'fn': 'lodash.difference(seventyFiveValues, seventyFiveValues2)',
@@ -669,6 +1134,51 @@
       })
       .add(otherName, {
         'fn': '_.difference(seventyFiveValues, seventyFiveValues2)',
+>>>>>>> upstream/master
+        'teardown': 'function multiArrays(){}'
+      })
+  );
+
+  suites.push(
+<<<<<<< HEAD
+    Benchmark.Suite('`_.difference` iterating 50 and 75 elements')
+      .add(buildName, {
+        'fn': 'lodash.difference(fiftyValues, seventyFiveValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.difference(fiftyValues, seventyFiveValues2)',
+=======
+    Benchmark.Suite('`_.difference` iterating 200 elements')
+      .add(buildName, {
+        'fn': 'lodash.difference(twoHundredValues, twoHundredValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.difference(twoHundredValues, twoHundredValues2)',
+>>>>>>> upstream/master
+        'teardown': 'function multiArrays(){}'
+      })
+  );
+
+  suites.push(
+<<<<<<< HEAD
+    Benchmark.Suite('`_.difference` iterating 75 elements')
+      .add(buildName, {
+        'fn': 'lodash.difference(seventyFiveValues, seventyFiveValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.difference(seventyFiveValues, seventyFiveValues2)',
+=======
+    Benchmark.Suite('`_.difference` iterating 20 and 40 elements')
+      .add(buildName, {
+        'fn': 'lodash.difference(twentyValues, fortyValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.difference(twentyValues, fortyValues2)',
+>>>>>>> upstream/master
         'teardown': 'function multiArrays(){}'
       })
   );
@@ -815,12 +1325,20 @@
     Benchmark.Suite('`_.find` iterating an array')
       .add(buildName, '\
         lodash.find(numbers, function(num) {\
+<<<<<<< HEAD
           return num === 19;\
+=======
+          return num === (limit - 1);\
+>>>>>>> upstream/master
         })'
       )
       .add(otherName, '\
         _.find(numbers, function(num) {\
+<<<<<<< HEAD
           return num === 19;\
+=======
+          return num === (limit - 1);\
+>>>>>>> upstream/master
         })'
       )
   );
@@ -839,6 +1357,24 @@
       )
   );
 
+<<<<<<< HEAD
+=======
+  // avoid Underscore induced `OutOfMemoryError` in Rhino, Narwhal, and Ringo
+  if (!isJava) {
+    suites.push(
+      Benchmark.Suite('`_.find` with `properties`')
+        .add(buildName, {
+          'fn': 'lodashFindWhere(objects, whereObject)',
+          'teardown': 'function where(){}'
+        })
+        .add(otherName, {
+          'fn': '_findWhere(objects, whereObject)',
+          'teardown': 'function where(){}'
+        })
+    );
+  }
+
+>>>>>>> upstream/master
   /*--------------------------------------------------------------------------*/
 
   suites.push(
@@ -852,6 +1388,19 @@
   );
 
   suites.push(
+<<<<<<< HEAD
+=======
+    Benchmark.Suite('`_.flatten` with objects')
+      .add(buildName, '\
+        lodash.flatten(nestedObjects)'
+      )
+      .add(otherName, '\
+        _.flatten(nestedObjects)'
+      )
+  );
+
+  suites.push(
+>>>>>>> upstream/master
     Benchmark.Suite('`_.flatten` with `shallow`')
       .add(buildName, '\
         lodash.flatten(nestedNumbers, true)'
@@ -912,16 +1461,26 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.indexOf`')
       .add(buildName, '\
         lodash.indexOf(numbers, 9)'
       )
       .add(otherName, '\
         _.indexOf(numbers, 9)'
+=======
+    Benchmark.Suite('`_.indexBy` with `callback` iterating an array')
+      .add(buildName, '\
+        lodash.indexBy(numbers, function(num) { return num >> 1; })'
+      )
+      .add(otherName, '\
+        _.indexBy(numbers, function(num) { return num >> 1; })'
+>>>>>>> upstream/master
       )
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.indexOf` with `isSorted`')
       .add(buildName, '\
         lodash.indexOf(numbers, 19, true)'
@@ -951,10 +1510,46 @@
       })
       .add(otherName, {
         'fn': '_.intersection(twentyFiveValues, twentyFiveValues2)',
+=======
+    Benchmark.Suite('`_.indexBy` with `property` name iterating an array')
+      .add(buildName, {
+        'fn': 'lodash.indexBy(words, "length")',
+        'teardown': 'function countBy(){}'
+      })
+      .add(otherName, {
+        'fn': '_.indexBy(words, "length")',
+        'teardown': 'function countBy(){}'
+      })
+  );
+
+  suites.push(
+    Benchmark.Suite('`_.indexBy` with `callback` iterating an object')
+      .add(buildName, {
+        'fn': 'lodash.indexBy(wordToNumber, function(num) { return num >> 1; })',
+        'teardown': 'function countBy(){}'
+      })
+      .add(otherName, {
+        'fn': '_.indexBy(wordToNumber, function(num) { return num >> 1; })',
+        'teardown': 'function countBy(){}'
+      })
+  );
+
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+    Benchmark.Suite('`_.indexOf`')
+      .add(buildName, {
+        'fn': 'lodash.indexOf(twoHundredValues, 199)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.indexOf(twoHundredValues, 199)',
+>>>>>>> upstream/master
         'teardown': 'function multiArrays(){}'
       })
   );
 
+<<<<<<< HEAD
   suites.push(
     Benchmark.Suite('`_.intersection` iterating 50 and 75 elements')
       .add(buildName, {
@@ -963,8 +1558,17 @@
       })
       .add(otherName, {
         'fn': '_.intersection(fiftyValues, seventyFiveValues2)',
-        'teardown': 'function multiArrays(){}'
-      })
+=======
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+    Benchmark.Suite('`_.intersection`')
+      .add(buildName, '\
+        lodash.intersection(numbers, twoNumbers, fourNumbers)'
+      )
+      .add(otherName, '\
+        _.intersection(numbers, twoNumbers, fourNumbers)'
+      )
   );
 
   suites.push(
@@ -975,6 +1579,29 @@
       })
       .add(otherName, {
         'fn': '_.intersection(seventyFiveValues, seventyFiveValues2)',
+>>>>>>> upstream/master
+        'teardown': 'function multiArrays(){}'
+      })
+  );
+
+  suites.push(
+<<<<<<< HEAD
+    Benchmark.Suite('`_.intersection` iterating 75 elements')
+      .add(buildName, {
+        'fn': 'lodash.intersection(seventyFiveValues, seventyFiveValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.intersection(seventyFiveValues, seventyFiveValues2)',
+=======
+    Benchmark.Suite('`_.intersection` iterating 200 elements')
+      .add(buildName, {
+        'fn': 'lodash.intersection(twoHundredValues, twoHundredValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.intersection(twoHundredValues, twoHundredValues2)',
+>>>>>>> upstream/master
         'teardown': 'function multiArrays(){}'
       })
   );
@@ -1040,11 +1667,23 @@
   suites.push(
     Benchmark.Suite('`_.isEqual` comparing arrays')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.isEqual(numbers, numbers2)',
         'teardown': 'function isEqual(){}'
       })
       .add(otherName, {
         'fn': '_.isEqual(numbers, numbers2)',
+=======
+        'fn': '\
+          lodash.isEqual(numbers, numbers2);\
+          lodash.isEqual(twoNumbers, twoNumbers2)',
+        'teardown': 'function isEqual(){}'
+      })
+      .add(otherName, {
+        'fn': '\
+          _.isEqual(numbers, numbers2);\
+          _.isEqual(twoNumbers, twoNumbers2)',
+>>>>>>> upstream/master
         'teardown': 'function isEqual(){}'
       })
   );
@@ -1052,11 +1691,23 @@
   suites.push(
     Benchmark.Suite('`_.isEqual` comparing nested arrays')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.isEqual(nestedNumbers, nestedNumbers2)',
         'teardown': 'function isEqual(){}'
       })
       .add(otherName, {
         'fn': '_.isEqual(nestedNumbers, nestedNumbers2)',
+=======
+        'fn': '\
+          lodash.isEqual(nestedNumbers, nestedNumbers2);\
+          lodash.isEqual(nestedNumbers2, nestedNumbers3)',
+        'teardown': 'function isEqual(){}'
+      })
+      .add(otherName, {
+        'fn': '\
+          _.isEqual(nestedNumbers, nestedNumbers2);\
+          _.isEqual(nestedNumbers2, nestedNumbers3)',
+>>>>>>> upstream/master
         'teardown': 'function isEqual(){}'
       })
   );
@@ -1064,11 +1715,23 @@
   suites.push(
     Benchmark.Suite('`_.isEqual` comparing arrays of objects')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.isEqual(objects, objects2)',
         'teardown': 'function isEqual(){}'
       })
       .add(otherName, {
         'fn': '_.isEqual(objects, objects2)',
+=======
+        'fn': '\
+          lodash.isEqual(objects, objects2);\
+          lodash.isEqual(simpleObjects, simpleObjects2)',
+        'teardown': 'function isEqual(){}'
+      })
+      .add(otherName, {
+        'fn': '\
+          _.isEqual(objects, objects2);\
+          _.isEqual(simpleObjects, simpleObjects2)',
+>>>>>>> upstream/master
         'teardown': 'function isEqual(){}'
       })
   );
@@ -1076,11 +1739,23 @@
   suites.push(
     Benchmark.Suite('`_.isEqual` comparing objects')
       .add(buildName, {
+<<<<<<< HEAD
         'fn': 'lodash.isEqual(object, object2)',
         'teardown': 'function isEqual(){}'
       })
       .add(otherName, {
         'fn': '_.isEqual(object, object2)',
+=======
+        'fn': '\
+          lodash.isEqual(object, object2);\
+          lodash.isEqual(simpleObject, simpleObject2)',
+        'teardown': 'function isEqual(){}'
+      })
+      .add(otherName, {
+        'fn': '\
+          _.isEqual(object, object2);\
+          _.isEqual(simpleObject, simpleObject2)',
+>>>>>>> upstream/master
         'teardown': 'function isEqual(){}'
       })
   );
@@ -1088,7 +1763,11 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.isArguments`, `_.isDate`, `_.isFunction`, `_.isNumber`, `_.isRegExp`')
+=======
+    Benchmark.Suite('`_.isArguments`, `_.isDate`, `_.isFunction`, `_.isNumber`, `_.isObject`, `_.isRegExp`')
+>>>>>>> upstream/master
       .add(buildName, '\
         lodash.isArguments(arguments);\
         lodash.isArguments(object);\
@@ -1098,8 +1777,15 @@
         lodash.isFunction(object);\
         lodash.isNumber(1);\
         lodash.isNumber(object);\
+<<<<<<< HEAD
         lodash.isRegExp(regexp);\
         lodash.isRegExp(object);'
+=======
+        lodash.isObject(object);\
+        lodash.isObject(1);\
+        lodash.isRegExp(regexp);\
+        lodash.isRegExp(object)'
+>>>>>>> upstream/master
       )
       .add(otherName, '\
         _.isArguments(arguments);\
@@ -1110,8 +1796,15 @@
         _.isFunction(object);\
         _.isNumber(1);\
         _.isNumber(object);\
+<<<<<<< HEAD
         _.isRegExp(regexp);\
         _.isRegExp(object);'
+=======
+        _.isObject(object);\
+        _.isObject(1);\
+        _.isRegExp(regexp);\
+        _.isRegExp(object)'
+>>>>>>> upstream/master
       )
   );
 
@@ -1226,7 +1919,11 @@
         'teardown': 'function omit(){}'
       })
       .add(otherName, {
+<<<<<<< HEAD
         'fn': 'result = _.omit(wordToNumber, words)',
+=======
+        'fn': '_.omit(wordToNumber, words)',
+>>>>>>> upstream/master
         'teardown': 'function omit(){}'
       })
   );
@@ -1275,13 +1972,21 @@
         lodash.reduce(numbers, function(result, value, index) {\
           result[index] = value;\
           return result;\
+<<<<<<< HEAD
         }, {});'
+=======
+        }, {})'
+>>>>>>> upstream/master
       )
       .add(otherName, '\
         _.reduce(numbers, function(result, value, index) {\
           result[index] = value;\
           return result;\
+<<<<<<< HEAD
         }, {});'
+=======
+        }, {})'
+>>>>>>> upstream/master
       )
   );
 
@@ -1289,6 +1994,7 @@
     Benchmark.Suite('`_.reduce` iterating an object')
       .add(buildName, '\
         lodash.reduce(object, function(result, value, key) {\
+<<<<<<< HEAD
           result.push([key, value]);\
           return result;\
         }, []);'
@@ -1298,6 +2004,17 @@
           result.push([key, value]);\
           return result;\
         }, []);'
+=======
+          result.push(key, value);\
+          return result;\
+        }, [])'
+      )
+      .add(otherName, '\
+        _.reduce(object, function(result, value, key) {\
+          result.push(key, value);\
+          return result;\
+        }, [])'
+>>>>>>> upstream/master
       )
   );
 
@@ -1309,13 +2026,21 @@
         lodash.reduceRight(numbers, function(result, value, index) {\
           result[index] = value;\
           return result;\
+<<<<<<< HEAD
         }, {});'
+=======
+        }, {})'
+>>>>>>> upstream/master
       )
       .add(otherName, '\
         _.reduceRight(numbers, function(result, value, index) {\
           result[index] = value;\
           return result;\
+<<<<<<< HEAD
         }, {});'
+=======
+        }, {})'
+>>>>>>> upstream/master
       )
   );
 
@@ -1323,6 +2048,7 @@
     Benchmark.Suite('`_.reduceRight` iterating an object')
       .add(buildName, '\
         lodash.reduceRight(object, function(result, value, key) {\
+<<<<<<< HEAD
           result.push([key, value]);\
           return result;\
         }, []);'
@@ -1332,6 +2058,17 @@
           result.push([key, value]);\
           return result;\
         }, []);'
+=======
+          result.push(key, value);\
+          return result;\
+        }, [])'
+      )
+      .add(otherName, '\
+        _.reduceRight(object, function(result, value, key) {\
+          result.push(key, value);\
+          return result;\
+        }, [])'
+>>>>>>> upstream/master
       )
   );
 
@@ -1382,6 +2119,21 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
+=======
+    Benchmark.Suite('`_.sample` with an `n`')
+      .add(buildName, '\
+        lodash.sample(numbers, limit / 2)'
+      )
+      .add(otherName, '\
+        _.sample(numbers, limit / 2)'
+      )
+  );
+
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+>>>>>>> upstream/master
     Benchmark.Suite('`_.shuffle`')
       .add(buildName, '\
         lodash.shuffle(numbers)'
@@ -1409,13 +2161,41 @@
     Benchmark.Suite('`_.some` iterating an array')
       .add(buildName, '\
         lodash.some(numbers, function(num) {\
+<<<<<<< HEAD
           return num == 19;\
+=======
+          return num == (limit - 1);\
+>>>>>>> upstream/master
         })'
       )
       .add(otherName, '\
         _.some(numbers, function(num) {\
+<<<<<<< HEAD
           return num == 19;\
+=======
+          return num == (limit - 1);\
+>>>>>>> upstream/master
         })'
+      )
+  );
+
+  suites.push(
+<<<<<<< HEAD
+    Benchmark.Suite('`_.some` iterating an object')
+      .add(buildName, '\
+        lodash.some(object, function(num) {\
+          return num == 19;\
+=======
+    Benchmark.Suite('`_.some` with `thisArg` iterating an array (slow path)')
+      .add(buildName, '\
+        lodash.some(objects, function(value, index) {\
+          return this["key" + index] == (limit - 1);\
+        }, object)'
+      )
+      .add(otherName, '\
+        _.some(objects, function(value, index) {\
+          return this["key" + index] == (limit - 1);\
+        }, object)'
       )
   );
 
@@ -1423,12 +2203,17 @@
     Benchmark.Suite('`_.some` iterating an object')
       .add(buildName, '\
         lodash.some(object, function(num) {\
-          return num == 19;\
+          return num == (limit - 1);\
+>>>>>>> upstream/master
         })'
       )
       .add(otherName, '\
         _.some(object, function(num) {\
+<<<<<<< HEAD
           return num == 19;\
+=======
+          return num == (limit - 1);\
+>>>>>>> upstream/master
         })'
       )
   );
@@ -1470,6 +2255,7 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.sortedIndex`')
       .add(buildName, '\
         lodash.sortedIndex(numbers, 25)'
@@ -1480,6 +2266,8 @@
   );
 
   suites.push(
+=======
+>>>>>>> upstream/master
     Benchmark.Suite('`_.sortedIndex` with `callback`')
       .add(buildName, {
         'fn': '\
@@ -1500,7 +2288,11 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.template` without "evaluate" delimiters (slow path)')
+=======
+    Benchmark.Suite('`_.template` (slow path)')
+>>>>>>> upstream/master
       .add(buildName, {
         'fn': 'lodash.template(tpl, tplData)',
         'teardown': 'function template(){}'
@@ -1512,6 +2304,7 @@
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.template` with "evaluate" delimiters (slow path)')
       .add(buildName, {
         'fn': 'lodash.template(tplWithEvaluate, tplData)',
@@ -1525,6 +2318,9 @@
 
   suites.push(
     Benchmark.Suite('compiled template without "evaluate" delimiters')
+=======
+    Benchmark.Suite('compiled template')
+>>>>>>> upstream/master
       .add(buildName, {
         'fn': 'lodashTpl(tplData)',
         'teardown': 'function template(){}'
@@ -1536,6 +2332,7 @@
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('compiled template with "evaluate" delimiters')
       .add(buildName, {
         'fn': 'lodashTplWithEvaluate(tplData)',
@@ -1549,6 +2346,9 @@
 
   suites.push(
     Benchmark.Suite('compiled template without a with-statement or "evaluate" delimiters')
+=======
+    Benchmark.Suite('compiled template without a with-statement')
+>>>>>>> upstream/master
       .add(buildName, {
         'fn': 'lodashTplVerbose(tplData)',
         'teardown': 'function template(){}'
@@ -1559,6 +2359,7 @@
       })
   );
 
+<<<<<<< HEAD
   suites.push(
     Benchmark.Suite('compiled template without a with-statement using "evaluate" delimiters')
       .add(buildName, {
@@ -1571,6 +2372,8 @@
       })
   );
 
+=======
+>>>>>>> upstream/master
   /*--------------------------------------------------------------------------*/
 
   suites.push(
@@ -1600,7 +2403,11 @@
   /*--------------------------------------------------------------------------*/
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.toArray` with an array')
+=======
+    Benchmark.Suite('`_.toArray` with an array (edge case)')
+>>>>>>> upstream/master
       .add(buildName, '\
         lodash.toArray(numbers)'
       )
@@ -1624,6 +2431,7 @@
   suites.push(
     Benchmark.Suite('`_.union`')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.union(numbers, fourNumbers, twoNumbers)'
       )
       .add(otherName, '\
@@ -1631,33 +2439,83 @@
       )
   );
 
+=======
+        lodash.union(numbers, twoNumbers, fourNumbers)'
+      )
+      .add(otherName, '\
+        _.union(numbers, twoNumbers, fourNumbers)'
+      )
+  );
+
+  suites.push(
+    Benchmark.Suite('`_.union` iterating an array of 75 elements')
+      .add(buildName, {
+        'fn': 'lodash.union(twentyFiveValues, fiftyValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.union(twentyFiveValues, fiftyValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+  );
+
+  suites.push(
+    Benchmark.Suite('`_.union` iterating an array of 200 elements')
+      .add(buildName, {
+        'fn': 'lodash.union(oneHundredValues, oneHundredValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.union(oneHundredValues, oneHundredValues2)',
+        'teardown': 'function multiArrays(){}'
+      })
+  );
+
+>>>>>>> upstream/master
   /*--------------------------------------------------------------------------*/
 
   suites.push(
     Benchmark.Suite('`_.uniq`')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.uniq(numbers.concat(fourNumbers, twoNumbers))'
       )
       .add(otherName, '\
         _.uniq(numbers.concat(fourNumbers, twoNumbers))'
+=======
+        lodash.uniq(numbers.concat(twoNumbers, fourNumbers))'
+      )
+      .add(otherName, '\
+        _.uniq(numbers.concat(twoNumbers, fourNumbers))'
+>>>>>>> upstream/master
       )
   );
 
   suites.push(
     Benchmark.Suite('`_.uniq` with `callback`')
       .add(buildName, '\
+<<<<<<< HEAD
         lodash.uniq(numbers.concat(fourNumbers, twoNumbers), function(num) {\
           return num % 2;\
         });'
       )
       .add(otherName, '\
         _.uniq(numbers.concat(fourNumbers, twoNumbers), function(num) {\
+=======
+        lodash.uniq(numbers.concat(twoNumbers, fourNumbers), function(num) {\
+          return num % 2;\
+        })'
+      )
+      .add(otherName, '\
+        _.uniq(numbers.concat(twoNumbers, fourNumbers), function(num) {\
+>>>>>>> upstream/master
           return num % 2;\
         })'
       )
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.uniq` iterating an array of 50 elements')
       .add(buildName, {
         'fn': 'lodash.uniq(twentyFiveValues.concat(twentyFiveValues2));',
@@ -1677,11 +2535,21 @@
       })
       .add(otherName, {
         'fn': '_.uniq(fiftyValues.concat(twentyFiveValues2));',
+=======
+    Benchmark.Suite('`_.uniq` iterating an array of 75 elements')
+      .add(buildName, {
+        'fn': 'lodash.uniq(twentyFiveValues.concat(fiftyValues2))',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.uniq(twentyFiveValues.concat(fiftyValues2))',
+>>>>>>> upstream/master
         'teardown': 'function multiArrays(){}'
       })
   );
 
   suites.push(
+<<<<<<< HEAD
     Benchmark.Suite('`_.uniq` iterating an array of 100 elements')
       .add(buildName, {
         'fn': 'lodash.uniq(seventyFiveValues.concat(twentyFiveValues2));',
@@ -1689,6 +2557,15 @@
       })
       .add(otherName, {
         'fn': '_.uniq(seventyFiveValues.concat(twentyFiveValues2));',
+=======
+    Benchmark.Suite('`_.uniq` iterating an array of 200 elements')
+      .add(buildName, {
+        'fn': 'lodash.uniq(oneHundredValues.concat(oneHundredValues2))',
+        'teardown': 'function multiArrays(){}'
+      })
+      .add(otherName, {
+        'fn': '_.uniq(oneHundredValues.concat(oneHundredValues2))',
+>>>>>>> upstream/master
         'teardown': 'function multiArrays(){}'
       })
   );
@@ -1709,12 +2586,23 @@
 
   suites.push(
     Benchmark.Suite('`_.where`')
+<<<<<<< HEAD
       .add(buildName, '\
         lodash.where(objects, { "num": 9 });'
       )
       .add(otherName, '\
         _.where(objects, { "num": 9 });'
       )
+=======
+      .add(buildName, {
+        'fn': 'lodash.where(objects, whereObject)',
+        'teardown': 'function where(){}'
+      })
+      .add(otherName, {
+        'fn': '_.where(objects, whereObject)',
+        'teardown': 'function where(){}'
+      })
+>>>>>>> upstream/master
   );
 
   /*--------------------------------------------------------------------------*/
@@ -1729,6 +2617,7 @@
       )
   );
 
+<<<<<<< HEAD
   suites.push(
     Benchmark.Suite('`_.without` iterating an array of 25 elements')
       .add(buildName, {
@@ -1762,6 +2651,19 @@
       .add(otherName, {
         'fn': '_.without.apply(_, [seventyFiveValues].concat(seventyFiveValues2));',
         'teardown': 'function multiArrays(){}'
+=======
+  /*--------------------------------------------------------------------------*/
+
+  suites.push(
+    Benchmark.Suite('`_.zip`')
+      .add(buildName, {
+        'fn': 'lodash.zip.apply(lodash, unzipped)',
+        'teardown': 'function zip(){}'
+      })
+      .add(otherName, {
+        'fn': '_.zip.apply(_, unzipped)',
+        'teardown': 'function zip(){}'
+>>>>>>> upstream/master
       })
   );
 
@@ -1770,9 +2672,14 @@
   if (Benchmark.platform + '') {
     log(Benchmark.platform);
   }
+<<<<<<< HEAD
 
   // in the browser, expose `run` to be called later
   if (window.document) {
+=======
+  // in the browser, expose `run` to be called later
+  if (window.document && !window.phantom) {
+>>>>>>> upstream/master
     window.run = run;
   } else {
     run();

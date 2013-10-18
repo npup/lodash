@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 $(document).ready(function() {
+=======
+(function() {
+>>>>>>> upstream/master
 
   var Library = Backbone.Collection.extend({
     url : function() { return '/library'; }
@@ -11,20 +15,33 @@ $(document).ready(function() {
     length : 123
   };
 
+<<<<<<< HEAD
   module("Backbone.sync", _.extend(new Environment, {
 
     setup : function() {
       Environment.prototype.setup.apply(this, arguments);
+=======
+  module("Backbone.sync", {
+
+    setup : function() {
+>>>>>>> upstream/master
       library = new Library;
       library.create(attrs, {wait: false});
     },
 
     teardown: function() {
+<<<<<<< HEAD
       Environment.prototype.teardown.apply(this, arguments);
       Backbone.emulateHTTP = false;
     }
 
   }));
+=======
+      Backbone.emulateHTTP = false;
+    }
+
+  });
+>>>>>>> upstream/master
 
   test("read", 4, function() {
     library.fetch();
@@ -209,4 +226,8 @@ $(document).ready(function() {
     strictEqual(this.ajaxSettings.beforeSend(xhr), false);
   });
 
+<<<<<<< HEAD
 });
+=======
+})();
+>>>>>>> upstream/master

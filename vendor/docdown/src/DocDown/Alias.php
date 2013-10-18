@@ -19,7 +19,11 @@ class Alias {
    * The Alias constructor.
    *
    * @constructor
+<<<<<<< HEAD
    * @param {String} $name The alias name.
+=======
+   * @param {string} $name The alias name.
+>>>>>>> upstream/master
    * @param {Object} $owner The alias owner.
    */
   public function __construct( $name, $owner ) {
@@ -29,15 +33,26 @@ class Alias {
     $this->_category = $owner->getCategory();
     $this->_desc = $owner->getDesc();
     $this->_example = $owner->getExample();
+<<<<<<< HEAD
+=======
+    $this->_isCtor = $owner->isCtor();
+    $this->_isLicense = $owner->isLicense();
+    $this->_isPlugin = $owner->isPlugin();
+    $this->_isPrivate = $owner->isPrivate();
+    $this->_isStatic = $owner->isStatic();
+>>>>>>> upstream/master
     $this->_lineNumber = $owner->getLineNumber();
     $this->_members = $owner->getMembers();
     $this->_params = $owner->getParams();
     $this->_returns = $owner->getReturns();
     $this->_type = $owner->getType();
+<<<<<<< HEAD
     $this->_isCtor = $owner->isCtor();
     $this->_isPlugin = $owner->isPlugin();
     $this->_isPrivate = $owner->isPrivate();
     $this->_isStatic = $owner->isStatic();
+=======
+>>>>>>> upstream/master
   }
 
   /*--------------------------------------------------------------------------*/
@@ -46,8 +61,13 @@ class Alias {
    * Extracts the entry's `alias` objects.
    *
    * @memberOf Alias
+<<<<<<< HEAD
    * @param {Number} $index The index of the array value to return.
    * @returns {Array|String} The entry's `alias` objects.
+=======
+   * @param {number} $index The index of the array value to return.
+   * @returns {Array|string} The entry's `alias` objects.
+>>>>>>> upstream/master
    */
   public function getAliases( $index = null ) {
     $result = array();
@@ -60,7 +80,11 @@ class Alias {
    * Extracts the function call from the owner entry.
    *
    * @memberOf Alias
+<<<<<<< HEAD
    * @returns {String} The function call.
+=======
+   * @returns {string} The function call.
+>>>>>>> upstream/master
    */
   public function getCall() {
     return $this->_call;
@@ -70,7 +94,11 @@ class Alias {
    * Extracts the owner entry's `category` data.
    *
    * @memberOf Alias
+<<<<<<< HEAD
    * @returns {String} The owner entry's `category` data.
+=======
+   * @returns {string} The owner entry's `category` data.
+>>>>>>> upstream/master
    */
   public function getCategory() {
     return $this->_category;
@@ -80,7 +108,11 @@ class Alias {
    * Extracts the owner entry's description.
    *
    * @memberOf Alias
+<<<<<<< HEAD
    * @returns {String} The owner entry's description.
+=======
+   * @returns {string} The owner entry's description.
+>>>>>>> upstream/master
    */
   public function getDesc() {
     return $this->_desc;
@@ -90,13 +122,18 @@ class Alias {
    * Extracts the owner entry's `example` data.
    *
    * @memberOf Alias
+<<<<<<< HEAD
    * @returns {String} The owner entry's `example` data.
+=======
+   * @returns {string} The owner entry's `example` data.
+>>>>>>> upstream/master
    */
   public function getExample() {
     return $this->_example;
   }
 
   /**
+<<<<<<< HEAD
    * Resolves the owner entry's line number.
    *
    * @memberOf Alias
@@ -210,6 +247,131 @@ class Alias {
    */
   public function isStatic() {
     return $this->_isStatic;
+=======
+   * Checks if the entry is an alias.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true`.
+   */
+  public function isAlias() {
+    return true;
+  }
+
+  /**
+   * Checks if the owner entry is a constructor.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true` if a constructor, else `false`.
+   */
+  public function isCtor() {
+    return $this->_isCtor;
+  }
+
+  /**
+   * Checks if the owner entry is a license.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true` if a license, else `false`.
+   */
+  public function isLicense() {
+    return $this->_isLicense;
+  }
+
+  /**
+   * Checks if the owner entry *is* assigned to a prototype.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true` if assigned to a prototype, else `false`.
+   */
+  public function isPlugin() {
+    return $this->_isPlugin;
+  }
+
+  /**
+   * Checks if the owner entry is private.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true` if private, else `false`.
+   */
+  public function isPrivate() {
+    return $this->_isPrivate;
+  }
+
+  /**
+   * Checks if the owner entry is *not* assigned to a prototype.
+   *
+   * @memberOf Alias
+   * @returns {boolean} Returns `true` if not assigned to a prototype, else `false`.
+   */
+  public function isStatic() {
+    return $this->_isStatic;
+  }
+
+  /**
+   * Resolves the owner entry's line number.
+   *
+   * @memberOf Alias
+   * @returns {number} The owner entry's line number.
+   */
+  public function getLineNumber() {
+    return $this->_lineNumber;
+  }
+
+  /**
+   * Extracts the owner entry's `member` data.
+   *
+   * @memberOf Alias
+   * @param {number} $index The index of the array value to return.
+   * @returns {Array|string} The owner entry's `member` data.
+   */
+  public function getMembers( $index = null ) {
+    return $index !== null
+      ? @$this->_members[$index]
+      : $this->_members;
+  }
+
+  /**
+   * Extracts the owner entry's `name` data.
+   *
+   * @memberOf Alias
+   * @returns {string} The owner entry's `name` data.
+   */
+  public function getName() {
+    return $this->_name;
+  }
+
+  /**
+   * Extracts the owner entry's `param` data.
+   *
+   * @memberOf Alias
+   * @param {number} $index The index of the array value to return.
+   * @returns {Array} The owner entry's `param` data.
+   */
+  public function getParams( $index = null ) {
+    return $index !== null
+      ? @$this->_params[$index]
+      : $this->_params;
+  }
+
+  /**
+   * Extracts the owner entry's `returns` data.
+   *
+   * @memberOf Alias
+   * @returns {string} The owner entry's `returns` data.
+   */
+  public function getReturns() {
+    return $this->_returns;
+  }
+
+  /**
+   * Extracts the owner entry's `type` data.
+   *
+   * @memberOf Alias
+   * @returns {string} The owner entry's `type` data.
+   */
+  public function getType() {
+    return $this->_type;
+>>>>>>> upstream/master
   }
 }
 ?>

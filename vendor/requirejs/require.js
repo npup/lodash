@@ -1,18 +1,30 @@
 /** vim: et:ts=4:sw=4:sts=4
+<<<<<<< HEAD
  * @license RequireJS 2.1.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+=======
+ * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+>>>>>>> upstream/master
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
 //Not using strict: uneven strict support in browsers, #392, and causes
 //problems with requirejs.exec()/transpiler plugins that may not be strict.
 /*jslint regexp: true, nomen: true, sloppy: true */
+<<<<<<< HEAD
 /*global window, navigator, document, importScripts, jQuery, setTimeout, opera */
+=======
+/*global window, navigator, document, importScripts, setTimeout, opera */
+>>>>>>> upstream/master
 
 var requirejs, require, define;
 (function (global) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
+<<<<<<< HEAD
         version = '2.1.1',
+=======
+        version = '2.1.9',
+>>>>>>> upstream/master
         commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,
         cjsRequireRegExp = /[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,
         jsSuffixRegExp = /\.js$/,
@@ -21,9 +33,14 @@ var requirejs, require, define;
         ostring = op.toString,
         hasOwn = op.hasOwnProperty,
         ap = Array.prototype,
+<<<<<<< HEAD
         aps = ap.slice,
         apsp = ap.splice,
         isBrowser = !!(typeof window !== 'undefined' && navigator && document),
+=======
+        apsp = ap.splice,
+        isBrowser = !!(typeof window !== 'undefined' && typeof navigator !== 'undefined' && window.document),
+>>>>>>> upstream/master
         isWebWorker = !isBrowser && typeof importScripts !== 'undefined',
         //PS3 indicates loaded and complete, but need to wait for complete
         //specifically. Sequence is 'loading', 'loaded', execution,
@@ -81,6 +98,13 @@ var requirejs, require, define;
         return hasOwn.call(obj, prop);
     }
 
+<<<<<<< HEAD
+=======
+    function getOwn(obj, prop) {
+        return hasProp(obj, prop) && obj[prop];
+    }
+
+>>>>>>> upstream/master
     /**
      * Cycles over properties in an object and calls a function for each
      * property value. If the function returns a truthy value, then the
@@ -89,7 +113,11 @@ var requirejs, require, define;
     function eachProp(obj, func) {
         var prop;
         for (prop in obj) {
+<<<<<<< HEAD
             if (obj.hasOwnProperty(prop)) {
+=======
+            if (hasProp(obj, prop)) {
+>>>>>>> upstream/master
                 if (func(obj[prop], prop)) {
                     break;
                 }
@@ -131,6 +159,13 @@ var requirejs, require, define;
         return document.getElementsByTagName('script');
     }
 
+<<<<<<< HEAD
+=======
+    function defaultOnError(err) {
+        throw err;
+    }
+
+>>>>>>> upstream/master
     //Allow getting a global that expressed in
     //dot notation, like 'a.b.c'.
     function getGlobal(value) {
@@ -188,15 +223,31 @@ var requirejs, require, define;
         var inCheckLoaded, Module, context, handlers,
             checkLoadedTimeoutId,
             config = {
+<<<<<<< HEAD
+=======
+                //Defaults. Do not set a default for map
+                //config to speed up normalize(), which
+                //will run faster if there is no default.
+>>>>>>> upstream/master
                 waitSeconds: 7,
                 baseUrl: './',
                 paths: {},
                 pkgs: {},
                 shim: {},
+<<<<<<< HEAD
                 map: {},
                 config: {}
             },
             registry = {},
+=======
+                config: {}
+            },
+            registry = {},
+            //registry of just enabled modules, to speed
+            //cycle breaking code when lots of modules
+            //are registered, but not activated.
+            enabledRegistry = {},
+>>>>>>> upstream/master
             undefEvents = {},
             defQueue = [],
             defined = {},
@@ -261,7 +312,11 @@ var requirejs, require, define;
                 //otherwise, assume it is a top-level require that will
                 //be relative to baseUrl in the end.
                 if (baseName) {
+<<<<<<< HEAD
                     if (config.pkgs[baseName]) {
+=======
+                    if (getOwn(config.pkgs, baseName)) {
+>>>>>>> upstream/master
                         //If the baseName is a package name, then just treat it as one
                         //name to concat the name with.
                         normalizedBaseParts = baseParts = [baseName];
@@ -279,7 +334,11 @@ var requirejs, require, define;
 
                     //Some use of packages may use a . path to reference the
                     //'main' module name, so normalize for that.
+<<<<<<< HEAD
                     pkgConfig = config.pkgs[(pkgName = name[0])];
+=======
+                    pkgConfig = getOwn(config.pkgs, (pkgName = name[0]));
+>>>>>>> upstream/master
                     name = name.join('/');
                     if (pkgConfig && name === pkgName + '/' + pkgConfig.main) {
                         name = pkgName;
@@ -292,7 +351,11 @@ var requirejs, require, define;
             }
 
             //Apply map config if available.
+<<<<<<< HEAD
             if (applyMap && (baseParts || starMap) && map) {
+=======
+            if (applyMap && map && (baseParts || starMap)) {
+>>>>>>> upstream/master
                 nameParts = name.split('/');
 
                 for (i = nameParts.length; i > 0; i -= 1) {
@@ -302,12 +365,20 @@ var requirejs, require, define;
                         //Find the longest baseName segment match in the config.
                         //So, do joins on the biggest to smallest lengths of baseParts.
                         for (j = baseParts.length; j > 0; j -= 1) {
+<<<<<<< HEAD
                             mapValue = map[baseParts.slice(0, j).join('/')];
+=======
+                            mapValue = getOwn(map, baseParts.slice(0, j).join('/'));
+>>>>>>> upstream/master
 
                             //baseName segment has config, find if it has one for
                             //this name.
                             if (mapValue) {
+<<<<<<< HEAD
                                 mapValue = mapValue[nameSegment];
+=======
+                                mapValue = getOwn(mapValue, nameSegment);
+>>>>>>> upstream/master
                                 if (mapValue) {
                                     //Match, update name to the new value.
                                     foundMap = mapValue;
@@ -325,8 +396,13 @@ var requirejs, require, define;
                     //Check for a star map match, but just hold on to it,
                     //if there is a shorter segment match later in a matching
                     //config, then favor over this star map.
+<<<<<<< HEAD
                     if (!foundStarMap && starMap && starMap[nameSegment]) {
                         foundStarMap = starMap[nameSegment];
+=======
+                    if (!foundStarMap && starMap && getOwn(starMap, nameSegment)) {
+                        foundStarMap = getOwn(starMap, nameSegment);
+>>>>>>> upstream/master
                         starI = i;
                     }
                 }
@@ -358,9 +434,14 @@ var requirejs, require, define;
         }
 
         function hasPathFallback(id) {
+<<<<<<< HEAD
             var pathConfig = config.paths[id];
             if (pathConfig && isArray(pathConfig) && pathConfig.length > 1) {
                 removeScript(id);
+=======
+            var pathConfig = getOwn(config.paths, id);
+            if (pathConfig && isArray(pathConfig) && pathConfig.length > 1) {
+>>>>>>> upstream/master
                 //Pop off the first array value, since it failed, and
                 //retry
                 pathConfig.shift();
@@ -419,7 +500,11 @@ var requirejs, require, define;
 
             if (prefix) {
                 prefix = normalize(prefix, parentName, applyMap);
+<<<<<<< HEAD
                 pluginModule = defined[prefix];
+=======
+                pluginModule = getOwn(defined, prefix);
+>>>>>>> upstream/master
             }
 
             //Account for relative paths if there is a base name.
@@ -472,7 +557,11 @@ var requirejs, require, define;
 
         function getModule(depMap) {
             var id = depMap.id,
+<<<<<<< HEAD
                 mod = registry[id];
+=======
+                mod = getOwn(registry, id);
+>>>>>>> upstream/master
 
             if (!mod) {
                 mod = registry[id] = new context.Module(depMap);
@@ -483,7 +572,11 @@ var requirejs, require, define;
 
         function on(depMap, name, fn) {
             var id = depMap.id,
+<<<<<<< HEAD
                 mod = registry[id];
+=======
+                mod = getOwn(registry, id);
+>>>>>>> upstream/master
 
             if (hasProp(defined, id) &&
                     (!mod || mod.defineEmitComplete)) {
@@ -491,7 +584,16 @@ var requirejs, require, define;
                     fn(defined[id]);
                 }
             } else {
+<<<<<<< HEAD
                 getModule(depMap).on(name, fn);
+=======
+                mod = getModule(depMap);
+                if (mod.error && name === 'error') {
+                    fn(mod.error);
+                } else {
+                    mod.on(name, fn);
+                }
+>>>>>>> upstream/master
             }
         }
 
@@ -503,7 +605,11 @@ var requirejs, require, define;
                 errback(err);
             } else {
                 each(ids, function (id) {
+<<<<<<< HEAD
                     var mod = registry[id];
+=======
+                    var mod = getOwn(registry, id);
+>>>>>>> upstream/master
                     if (mod) {
                         //Set error on module, so it skips timeout checks.
                         mod.error = err;
@@ -562,7 +668,17 @@ var requirejs, require, define;
                         id: mod.map.id,
                         uri: mod.map.url,
                         config: function () {
+<<<<<<< HEAD
                             return (config.config && config.config[mod.map.id]) || {};
+=======
+                            var c,
+                                pkg = getOwn(config.pkgs, mod.map.id);
+                            // For packages, only support config targeted
+                            // at the main module.
+                            c = pkg ? getOwn(config.config, mod.map.id + '/' + pkg.main) :
+                                      getOwn(config.config, mod.map.id);
+                            return  c || {};
+>>>>>>> upstream/master
                         },
                         exports: defined[mod.map.id]
                     });
@@ -573,6 +689,10 @@ var requirejs, require, define;
         function cleanRegistry(id) {
             //Clean up machinery used for waiting modules.
             delete registry[id];
+<<<<<<< HEAD
+=======
+            delete enabledRegistry[id];
+>>>>>>> upstream/master
         }
 
         function breakCycle(mod, traced, processed) {
@@ -584,14 +704,22 @@ var requirejs, require, define;
                 traced[id] = true;
                 each(mod.depMaps, function (depMap, i) {
                     var depId = depMap.id,
+<<<<<<< HEAD
                         dep = registry[depId];
+=======
+                        dep = getOwn(registry, depId);
+>>>>>>> upstream/master
 
                     //Only force things that have not completed
                     //being defined, so still in the registry,
                     //and only if it has not been matched up
                     //in the module already.
                     if (dep && !mod.depMatched[i] && !processed[depId]) {
+<<<<<<< HEAD
                         if (traced[depId]) {
+=======
+                        if (getOwn(traced, depId)) {
+>>>>>>> upstream/master
                             mod.defineDep(i, defined[depId]);
                             mod.check(); //pass false?
                         } else {
@@ -621,7 +749,11 @@ var requirejs, require, define;
             inCheckLoaded = true;
 
             //Figure out the state of all the modules.
+<<<<<<< HEAD
             eachProp(registry, function (mod) {
+=======
+            eachProp(enabledRegistry, function (mod) {
+>>>>>>> upstream/master
                 map = mod.map;
                 modId = map.id;
 
@@ -691,9 +823,15 @@ var requirejs, require, define;
         }
 
         Module = function (map) {
+<<<<<<< HEAD
             this.events = undefEvents[map.id] || {};
             this.map = map;
             this.shim = config.shim[map.id];
+=======
+            this.events = getOwn(undefEvents, map.id) || {};
+            this.map = map;
+            this.shim = getOwn(config.shim, map.id);
+>>>>>>> upstream/master
             this.depExports = [];
             this.depMaps = [];
             this.depMatched = [];
@@ -802,7 +940,11 @@ var requirejs, require, define;
             },
 
             /**
+<<<<<<< HEAD
              * Checks is the module is ready to define itself, and if so,
+=======
+             * Checks if the module is ready to define itself, and if so,
+>>>>>>> upstream/master
              * define it.
              */
             check: function () {
@@ -830,8 +972,18 @@ var requirejs, require, define;
                     if (this.depCount < 1 && !this.defined) {
                         if (isFunction(factory)) {
                             //If there is an error listener, favor passing
+<<<<<<< HEAD
                             //to that instead of throwing an error.
                             if (this.events.error) {
+=======
+                            //to that instead of throwing an error. However,
+                            //only do it for define()'d  modules. require
+                            //errbacks should not be called for failures in
+                            //their callbacks (#699). However if a global
+                            //onError is set, use that.
+                            if ((this.events.error && this.map.isDefine) ||
+                                req.onError !== defaultOnError) {
+>>>>>>> upstream/master
                                 try {
                                     exports = context.execCb(id, factory, depExports, exports);
                                 } catch (e) {
@@ -859,8 +1011,13 @@ var requirejs, require, define;
 
                             if (err) {
                                 err.requireMap = this.map;
+<<<<<<< HEAD
                                 err.requireModules = [this.map.id];
                                 err.requireType = 'define';
+=======
+                                err.requireModules = this.map.isDefine ? [this.map.id] : null;
+                                err.requireType = this.map.isDefine ? 'define' : 'require';
+>>>>>>> upstream/master
                                 return onError((this.error = err));
                             }
 
@@ -880,7 +1037,11 @@ var requirejs, require, define;
                         }
 
                         //Clean up
+<<<<<<< HEAD
                         delete registry[id];
+=======
+                        cleanRegistry(id);
+>>>>>>> upstream/master
 
                         this.defined = true;
                     }
@@ -914,8 +1075,12 @@ var requirejs, require, define;
                         name = this.map.name,
                         parentName = this.map.parentMap ? this.map.parentMap.name : null,
                         localRequire = context.makeRequire(map.parentMap, {
+<<<<<<< HEAD
                             enableBuildCallback: true,
                             skipMap: true
+=======
+                            enableBuildCallback: true
+>>>>>>> upstream/master
                         });
 
                     //If current map is not normalized, wait for that
@@ -940,7 +1105,11 @@ var requirejs, require, define;
                                 });
                             }));
 
+<<<<<<< HEAD
                         normalizedMod = registry[normalizedMap.id];
+=======
+                        normalizedMod = getOwn(registry, normalizedMap.id);
+>>>>>>> upstream/master
                         if (normalizedMod) {
                             //Mark this as a dependency for this plugin, so it
                             //can be traced for cycles.
@@ -1005,11 +1174,27 @@ var requirejs, require, define;
                         //it.
                         getModule(moduleMap);
 
+<<<<<<< HEAD
                         try {
                             req.exec(text);
                         } catch (e) {
                             throw new Error('fromText eval for ' + moduleName +
                                             ' failed: ' + e);
+=======
+                        //Transfer any config to this other module.
+                        if (hasProp(config.config, id)) {
+                            config.config[moduleName] = config.config[id];
+                        }
+
+                        try {
+                            req.exec(text);
+                        } catch (e) {
+                            return onError(makeError('fromtexteval',
+                                             'fromText eval for ' + id +
+                                            ' failed: ' + e,
+                                             e,
+                                             [id]));
+>>>>>>> upstream/master
                         }
 
                         if (hasInteractive) {
@@ -1039,6 +1224,10 @@ var requirejs, require, define;
             },
 
             enable: function () {
+<<<<<<< HEAD
+=======
+                enabledRegistry[this.map.id] = this;
+>>>>>>> upstream/master
                 this.enabled = true;
 
                 //Set flag mentioning that the module is enabling,
@@ -1060,7 +1249,11 @@ var requirejs, require, define;
                                                !this.skipMap);
                         this.depMaps[i] = depMap;
 
+<<<<<<< HEAD
                         handler = handlers[depMap.id];
+=======
+                        handler = getOwn(handlers, depMap.id);
+>>>>>>> upstream/master
 
                         if (handler) {
                             this.depExports[i] = handler(this);
@@ -1075,7 +1268,11 @@ var requirejs, require, define;
                         }));
 
                         if (this.errback) {
+<<<<<<< HEAD
                             on(depMap, 'error', this.errback);
+=======
+                            on(depMap, 'error', bind(this, this.errback));
+>>>>>>> upstream/master
                         }
                     }
 
@@ -1085,7 +1282,11 @@ var requirejs, require, define;
                     //Skip special modules like 'require', 'exports', 'module'
                     //Also, don't call enable if it is already enabled,
                     //important in circular dependency cases.
+<<<<<<< HEAD
                     if (!handlers[id] && mod && !mod.enabled) {
+=======
+                    if (!hasProp(handlers, id) && mod && !mod.enabled) {
+>>>>>>> upstream/master
                         context.enable(depMap, this);
                     }
                 }));
@@ -1093,7 +1294,11 @@ var requirejs, require, define;
                 //Enable each plugin that is used in
                 //a dependency
                 eachProp(this.pluginMaps, bind(this, function (pluginMap) {
+<<<<<<< HEAD
                     var mod = registry[pluginMap.id];
+=======
+                    var mod = getOwn(registry, pluginMap.id);
+>>>>>>> upstream/master
                     if (mod && !mod.enabled) {
                         context.enable(pluginMap, this);
                     }
@@ -1126,7 +1331,14 @@ var requirejs, require, define;
         };
 
         function callGetModule(args) {
+<<<<<<< HEAD
             getModule(makeModuleMap(args[0], null, true)).init(args[1], args[2]);
+=======
+            //Skip modules already defined.
+            if (!hasProp(defined, args[0])) {
+                getModule(makeModuleMap(args[0], null, true)).init(args[1], args[2]);
+            }
+>>>>>>> upstream/master
         }
 
         function removeListener(node, func, name, ieName) {
@@ -1195,6 +1407,10 @@ var requirejs, require, define;
             Module: Module,
             makeModuleMap: makeModuleMap,
             nextTick: req.nextTick,
+<<<<<<< HEAD
+=======
+            onError: onError,
+>>>>>>> upstream/master
 
             /**
              * Set a configuration for the context.
@@ -1221,6 +1437,12 @@ var requirejs, require, define;
                 eachProp(cfg, function (value, prop) {
                     if (objs[prop]) {
                         if (prop === 'map') {
+<<<<<<< HEAD
+=======
+                            if (!config.map) {
+                                config.map = {};
+                            }
+>>>>>>> upstream/master
                             mixin(config[prop], value, true, true);
                         } else {
                             mixin(config[prop], value, true);
@@ -1239,7 +1461,11 @@ var requirejs, require, define;
                                 deps: value
                             };
                         }
+<<<<<<< HEAD
                         if (value.exports && !value.exportsFn) {
+=======
+                        if ((value.exports || value.init) && !value.exportsFn) {
+>>>>>>> upstream/master
                             value.exportsFn = context.makeShimExports(value);
                         }
                         shim[id] = value;
@@ -1301,7 +1527,11 @@ var requirejs, require, define;
                     if (value.init) {
                         ret = value.init.apply(global, arguments);
                     }
+<<<<<<< HEAD
                     return ret || getGlobal(value.exports);
+=======
+                    return ret || (value.exports && getGlobal(value.exports));
+>>>>>>> upstream/master
                 }
                 return fn;
             },
@@ -1325,14 +1555,22 @@ var requirejs, require, define;
                         //If require|exports|module are requested, get the
                         //value for them from the special handlers. Caveat:
                         //this only works while module is being defined.
+<<<<<<< HEAD
                         if (relMap && handlers[deps]) {
+=======
+                        if (relMap && hasProp(handlers, deps)) {
+>>>>>>> upstream/master
                             return handlers[deps](registry[relMap.id]);
                         }
 
                         //Synchronous access to one module. If require.get is
                         //available (as in the Node adapter), prefer that.
                         if (req.get) {
+<<<<<<< HEAD
                             return req.get(context, deps, relMap);
+=======
+                            return req.get(context, deps, relMap, localRequire);
+>>>>>>> upstream/master
                         }
 
                         //Normalize module name, if it contains . or ..
@@ -1383,16 +1621,31 @@ var requirejs, require, define;
                      * plain URLs like nameToUrl.
                      */
                     toUrl: function (moduleNamePlusExt) {
+<<<<<<< HEAD
                         var index = moduleNamePlusExt.lastIndexOf('.'),
                             ext = null;
 
                         if (index !== -1) {
+=======
+                        var ext,
+                            index = moduleNamePlusExt.lastIndexOf('.'),
+                            segment = moduleNamePlusExt.split('/')[0],
+                            isRelative = segment === '.' || segment === '..';
+
+                        //Have a file extension alias, and it is not the
+                        //dots from a relative path.
+                        if (index !== -1 && (!isRelative || index > 1)) {
+>>>>>>> upstream/master
                             ext = moduleNamePlusExt.substring(index, moduleNamePlusExt.length);
                             moduleNamePlusExt = moduleNamePlusExt.substring(0, index);
                         }
 
                         return context.nameToUrl(normalize(moduleNamePlusExt,
+<<<<<<< HEAD
                                                 relMap && relMap.id, true), ext);
+=======
+                                                relMap && relMap.id, true), ext,  true);
+>>>>>>> upstream/master
                     },
 
                     defined: function (id) {
@@ -1413,7 +1666,13 @@ var requirejs, require, define;
                         takeGlobalQueue();
 
                         var map = makeModuleMap(id, relMap, true),
+<<<<<<< HEAD
                             mod = registry[id];
+=======
+                            mod = getOwn(registry, id);
+
+                        removeScript(id);
+>>>>>>> upstream/master
 
                         delete defined[id];
                         delete urlFetched[map.url];
@@ -1437,11 +1696,20 @@ var requirejs, require, define;
 
             /**
              * Called to enable a module if it is still in the registry
+<<<<<<< HEAD
              * awaiting enablement. parent module is passed in for context,
              * used by the optimizer.
              */
             enable: function (depMap, parent) {
                 var mod = registry[depMap.id];
+=======
+             * awaiting enablement. A second arg, parent, the parent module,
+             * is passed in for context, when this method is overriden by
+             * the optimizer. Not shown here to keep code compact.
+             */
+            enable: function (depMap) {
+                var mod = getOwn(registry, depMap.id);
+>>>>>>> upstream/master
                 if (mod) {
                     getModule(depMap).enable();
                 }
@@ -1455,7 +1723,11 @@ var requirejs, require, define;
              */
             completeLoad: function (moduleName) {
                 var found, args, mod,
+<<<<<<< HEAD
                     shim = config.shim[moduleName] || {},
+=======
+                    shim = getOwn(config.shim, moduleName) || {},
+>>>>>>> upstream/master
                     shExports = shim.exports;
 
                 takeGlobalQueue();
@@ -1481,9 +1753,15 @@ var requirejs, require, define;
 
                 //Do this after the cycle of callGetModule in case the result
                 //of those calls/init calls changes the registry.
+<<<<<<< HEAD
                 mod = registry[moduleName];
 
                 if (!found && !defined[moduleName] && mod && !mod.inited) {
+=======
+                mod = getOwn(registry, moduleName);
+
+                if (!found && !hasProp(defined, moduleName) && mod && !mod.inited) {
+>>>>>>> upstream/master
                     if (config.enforceDefine && (!shExports || !getGlobal(shExports))) {
                         if (hasPathFallback(moduleName)) {
                             return;
@@ -1510,7 +1788,11 @@ var requirejs, require, define;
              * it is assumed to have already been normalized. This is an
              * internal API, not a public one. Use toUrl for the public API.
              */
+<<<<<<< HEAD
             nameToUrl: function (moduleName, ext) {
+=======
+            nameToUrl: function (moduleName, ext, skipExt) {
+>>>>>>> upstream/master
                 var paths, pkgs, pkg, pkgPath, syms, i, parentModule, url,
                     parentPath;
 
@@ -1534,8 +1816,13 @@ var requirejs, require, define;
                     //and work up from it.
                     for (i = syms.length; i > 0; i -= 1) {
                         parentModule = syms.slice(0, i).join('/');
+<<<<<<< HEAD
                         pkg = pkgs[parentModule];
                         parentPath = paths[parentModule];
+=======
+                        pkg = getOwn(pkgs, parentModule);
+                        parentPath = getOwn(paths, parentModule);
+>>>>>>> upstream/master
                         if (parentPath) {
                             //If an array, it means there are a few choices,
                             //Choose the one that is desired
@@ -1559,7 +1846,11 @@ var requirejs, require, define;
 
                     //Join the path parts together, then figure out if baseUrl is needed.
                     url = syms.join('/');
+<<<<<<< HEAD
                     url += (ext || (/\?/.test(url) ? '' : '.js'));
+=======
+                    url += (ext || (/^data\:|\?/.test(url) || skipExt ? '' : '.js'));
+>>>>>>> upstream/master
                     url = (url.charAt(0) === '/' || url.match(/^[\w\+\.\-]+:/) ? '' : config.baseUrl) + url;
                 }
 
@@ -1575,7 +1866,11 @@ var requirejs, require, define;
             },
 
             /**
+<<<<<<< HEAD
              * Executes a module callack function. Broken out as a separate function
+=======
+             * Executes a module callback function. Broken out as a separate function
+>>>>>>> upstream/master
              * solely to allow the build system to sequence the files in the built
              * layer in the right sequence.
              *
@@ -1613,7 +1908,11 @@ var requirejs, require, define;
             onScriptError: function (evt) {
                 var data = getScriptData(evt);
                 if (!hasPathFallback(data.id)) {
+<<<<<<< HEAD
                     return onError(makeError('scripterror', 'Script error', evt, [data.id]));
+=======
+                    return onError(makeError('scripterror', 'Script error for: ' + data.id, evt, [data.id]));
+>>>>>>> upstream/master
                 }
             }
         };
@@ -1660,7 +1959,11 @@ var requirejs, require, define;
             contextName = config.context;
         }
 
+<<<<<<< HEAD
         context = contexts[contextName];
+=======
+        context = getOwn(contexts, contextName);
+>>>>>>> upstream/master
         if (!context) {
             context = contexts[contextName] = req.s.newContext(contextName);
         }
@@ -1742,8 +2045,24 @@ var requirejs, require, define;
      * function. Intercept/override it if you want custom error handling.
      * @param {Error} err the error object.
      */
+<<<<<<< HEAD
     req.onError = function (err) {
         throw err;
+=======
+    req.onError = defaultOnError;
+
+    /**
+     * Creates the node for the load command. Only used in browser envs.
+     */
+    req.createNode = function (config, moduleName, url) {
+        var node = config.xhtml ?
+                document.createElementNS('http://www.w3.org/1999/xhtml', 'html:script') :
+                document.createElement('script');
+        node.type = config.scriptType || 'text/javascript';
+        node.charset = 'utf-8';
+        node.async = true;
+        return node;
+>>>>>>> upstream/master
     };
 
     /**
@@ -1760,12 +2079,16 @@ var requirejs, require, define;
             node;
         if (isBrowser) {
             //In the browser so use a script tag
+<<<<<<< HEAD
             node = config.xhtml ?
                     document.createElementNS('http://www.w3.org/1999/xhtml', 'html:script') :
                     document.createElement('script');
             node.type = config.scriptType || 'text/javascript';
             node.charset = 'utf-8';
             node.async = true;
+=======
+            node = req.createNode(config, moduleName, url);
+>>>>>>> upstream/master
 
             node.setAttribute('data-requirecontext', context.contextName);
             node.setAttribute('data-requiremodule', moduleName);
@@ -1798,7 +2121,11 @@ var requirejs, require, define;
                 node.attachEvent('onreadystatechange', context.onScriptLoad);
                 //It would be great to add an error handler here to catch
                 //404s in IE9+. However, onreadystatechange will fire before
+<<<<<<< HEAD
                 //the error handler, so that does not help. If addEvenListener
+=======
+                //the error handler, so that does not help. If addEventListener
+>>>>>>> upstream/master
                 //is used, then IE will fire error before load, but we cannot
                 //use that pathway given the connect.microsoft.com issue
                 //mentioned above about not doing the 'script execute,
@@ -1827,6 +2154,7 @@ var requirejs, require, define;
 
             return node;
         } else if (isWebWorker) {
+<<<<<<< HEAD
             //In a web worker, use importScripts. This is not a very
             //efficient use of importScripts, importScripts will block until
             //its script is downloaded and evaluated. However, if web workers
@@ -1837,6 +2165,26 @@ var requirejs, require, define;
 
             //Account for anonymous modules
             context.completeLoad(moduleName);
+=======
+            try {
+                //In a web worker, use importScripts. This is not a very
+                //efficient use of importScripts, importScripts will block until
+                //its script is downloaded and evaluated. However, if web workers
+                //are in play, the expectation that a build has been done so that
+                //only one script needs to be loaded anyway. This may need to be
+                //reevaluated if other use cases become common.
+                importScripts(url);
+
+                //Account for anonymous modules
+                context.completeLoad(moduleName);
+            } catch (e) {
+                context.onError(makeError('importscripts',
+                                'importScripts failed for ' +
+                                    moduleName + ' at ' + url,
+                                e,
+                                [moduleName]));
+            }
+>>>>>>> upstream/master
         }
     };
 
@@ -1854,7 +2202,11 @@ var requirejs, require, define;
     }
 
     //Look for a data-main script attribute, which could also adjust the baseUrl.
+<<<<<<< HEAD
     if (isBrowser) {
+=======
+    if (isBrowser && !cfg.skipDataMain) {
+>>>>>>> upstream/master
         //Figure out baseUrl. Get it from the script tag with require.js in it.
         eachReverse(scripts(), function (script) {
             //Set the 'head' where we can append children by
@@ -1868,15 +2220,26 @@ var requirejs, require, define;
             //baseUrl, if it is not already set.
             dataMain = script.getAttribute('data-main');
             if (dataMain) {
+<<<<<<< HEAD
+=======
+                //Preserve dataMain in case it is a path (i.e. contains '?')
+                mainScript = dataMain;
+
+>>>>>>> upstream/master
                 //Set final baseUrl if there is not already an explicit one.
                 if (!cfg.baseUrl) {
                     //Pull off the directory of data-main for use as the
                     //baseUrl.
+<<<<<<< HEAD
                     src = dataMain.split('/');
+=======
+                    src = mainScript.split('/');
+>>>>>>> upstream/master
                     mainScript = src.pop();
                     subPath = src.length ? src.join('/')  + '/' : './';
 
                     cfg.baseUrl = subPath;
+<<<<<<< HEAD
                     dataMain = mainScript;
                 }
 
@@ -1886,6 +2249,21 @@ var requirejs, require, define;
 
                 //Put the data-main script in the files to load.
                 cfg.deps = cfg.deps ? cfg.deps.concat(dataMain) : [dataMain];
+=======
+                }
+
+                //Strip off any trailing .js since mainScript is now
+                //like a module name.
+                mainScript = mainScript.replace(jsSuffixRegExp, '');
+
+                 //If mainScript is still a path, fall back to dataMain
+                if (req.jsExtRegExp.test(mainScript)) {
+                    mainScript = dataMain;
+                }
+
+                //Put the data-main script in the files to load.
+                cfg.deps = cfg.deps ? cfg.deps.concat(mainScript) : [mainScript];
+>>>>>>> upstream/master
 
                 return true;
             }
@@ -1913,12 +2291,21 @@ var requirejs, require, define;
         //This module may not have dependencies
         if (!isArray(deps)) {
             callback = deps;
+<<<<<<< HEAD
             deps = [];
+=======
+            deps = null;
+>>>>>>> upstream/master
         }
 
         //If no name, and callback is a function, then figure out if it a
         //CommonJS thing with dependencies.
+<<<<<<< HEAD
         if (!deps.length && isFunction(callback)) {
+=======
+        if (!deps && isFunction(callback)) {
+            deps = [];
+>>>>>>> upstream/master
             //Remove comments from the callback string,
             //look for require calls, and pull them into the dependencies,
             //but only if there are function args.

@@ -1,5 +1,16 @@
 .DS_Store
 *.custom.*
+<<<<<<< HEAD
 node_modules/
 vendor/closure-compiler/
 vendor/uglifyjs/
+=======
+*.template.*
+*.map
+/*.min.*
+modularize
+node_modules
+dist/*.backbone.*
+dist/*.legacy.*
+dist/*.mobile.*
+>>>>>>> upstream/master

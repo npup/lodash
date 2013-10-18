@@ -1,5 +1,6 @@
 /*!
  * Platform.js v1.0.0 <http://mths.be/platform>
+<<<<<<< HEAD
  * Copyright 2010-2012 John-David Dalton <http://allyoucanleet.com/>
  * Available under MIT license <http://mths.be/mit>
  */
@@ -8,22 +9,46 @@
 
   /** Backup possible window/global object */
   var oldWin = window;
+=======
+ * Copyright 2010-2013 John-David Dalton <http://allyoucanleet.com/>
+ * Available under MIT license <http://mths.be/mit>
+ */
+;(function(root) {
+  'use strict';
+
+  /** Backup possible global object */
+  var oldRoot = root;
+>>>>>>> upstream/master
 
   /** Detect free variable `exports` */
   var freeExports = typeof exports == 'object' && exports;
 
   /** Detect free variable `global` */
   var freeGlobal = typeof global == 'object' && global &&
+<<<<<<< HEAD
     (global == global.global ? (window = global) : global);
+=======
+    (global == global.global ? (root = global) : global);
+>>>>>>> upstream/master
 
   /** Opera regexp */
   var reOpera = /Opera/;
 
   /** Used to resolve a value's internal [[Class]] */
+<<<<<<< HEAD
   var toString = {}.toString;
 
   /** Detect Java environment */
   var java = /Java/.test(getClassOf(window.java)) && window.java;
+=======
+  var toString = Object.prototype.toString;
+
+  /** Detect Java environment */
+  var java = /Java/.test(getClassOf(root.java)) && root.java;
+
+  /** Detect Rhino */
+  var rhino = java && getClassOf(root.environment) == 'Environment';
+>>>>>>> upstream/master
 
   /** A character to represent alpha */
   var alpha = java ? 'a' : '\u03b1';
@@ -32,20 +57,32 @@
   var beta = java ? 'b' : '\u03b2';
 
   /** Browser document object */
+<<<<<<< HEAD
   var doc = window.document || {};
+=======
+  var doc = root.document || {};
+>>>>>>> upstream/master
 
   /** Used to check for own properties of an object */
   var hasOwnProperty = {}.hasOwnProperty;
 
   /** Browser navigator object */
+<<<<<<< HEAD
   var nav = window.navigator || {};
+=======
+  var nav = root.navigator || {};
+>>>>>>> upstream/master
 
   /**
    * Detect Opera browser
    * http://www.howtocreate.co.uk/operaStuff/operaObject.html
    * http://dev.opera.com/articles/view/opera-mini-web-content-authoring-guidelines/#operamini
    */
+<<<<<<< HEAD
   var opera = window.operamini || window.opera;
+=======
+  var opera = root.operamini || root.opera;
+>>>>>>> upstream/master
 
   /** Opera [[Class]] */
   var operaClass = reOpera.test(operaClass = getClassOf(opera)) ? operaClass : (opera = null);
@@ -62,8 +99,13 @@
    * Capitalizes a string value.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} string The string to capitalize.
    * @returns {String} The capitalized string.
+=======
+   * @param {string} string The string to capitalize.
+   * @returns {string} The capitalized string.
+>>>>>>> upstream/master
    */
   function capitalize(string) {
     string = String(string);
@@ -94,8 +136,13 @@
    * Trim and conditionally capitalize string values.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} string The string to format.
    * @returns {String} The formatted string.
+=======
+   * @param {string} string The string to format.
+   * @returns {string} The formatted string.
+>>>>>>> upstream/master
    */
   function format(string) {
     string = trim(string);
@@ -121,8 +168,13 @@
    * Gets the internal [[Class]] of a value.
    *
    * @private
+<<<<<<< HEAD
    * @param {Mixed} value The value.
    * @returns {String} The [[Class]].
+=======
+   * @param {*} value The value.
+   * @returns {string} The [[Class]].
+>>>>>>> upstream/master
    */
   function getClassOf(value) {
     return value == null
@@ -135,8 +187,13 @@
    *
    * @private
    * @param {Object} object The object to check.
+<<<<<<< HEAD
    * @param {String} key The key to check for.
    * @returns {Boolean} Returns `true` if key is a direct property, else `false`.
+=======
+   * @param {string} key The key to check for.
+   * @returns {boolean} Returns `true` if key is a direct property, else `false`.
+>>>>>>> upstream/master
    */
   function hasKey() {
     // lazy define for others (not as accurate)
@@ -170,9 +227,15 @@
    * types of object, function, or unknown.
    *
    * @private
+<<<<<<< HEAD
    * @param {Mixed} object The owner of the property.
    * @param {String} property The property to check.
    * @returns {Boolean} Returns `true` if the property value is a non-primitive, else `false`.
+=======
+   * @param {*} object The owner of the property.
+   * @param {string} property The property to check.
+   * @returns {boolean} Returns `true` if the property value is a non-primitive, else `false`.
+>>>>>>> upstream/master
    */
   function isHostType(object, property) {
     var type = object != null ? typeof object[property] : 'number';
@@ -185,8 +248,13 @@
    * spaces optional.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} string The string to qualify.
    * @returns {String} The qualified string.
+=======
+   * @param {string} string The string to qualify.
+   * @returns {string} The qualified string.
+>>>>>>> upstream/master
    */
   function qualify(string) {
     return String(string).replace(/([ -])(?!$)/g, '$1?');
@@ -198,8 +266,13 @@
    * @private
    * @param {Array} array The array to iterate over.
    * @param {Function} callback The function called per iteration.
+<<<<<<< HEAD
    * @param {Mixed} accumulator Initial value of the accumulator.
    * @returns {Mixed} The accumulator.
+=======
+   * @param {*} accumulator Initial value of the accumulator.
+   * @returns {*} The accumulator.
+>>>>>>> upstream/master
    */
   function reduce(array, callback) {
     var accumulator = null;
@@ -213,8 +286,13 @@
    * Removes leading and trailing whitespace from a string.
    *
    * @private
+<<<<<<< HEAD
    * @param {String} string The string to trim.
    * @returns {String} The trimmed string.
+=======
+   * @param {string} string The string to trim.
+   * @returns {string} The trimmed string.
+>>>>>>> upstream/master
    */
   function trim(string) {
     return String(string).replace(/^ +| +$/g, '');
@@ -226,7 +304,11 @@
    * Creates a new platform object.
    *
    * @memberOf platform
+<<<<<<< HEAD
    * @param {String} [ua = navigator.userAgent] The user agent string.
+=======
+   * @param {string} [ua = navigator.userAgent] The user agent string.
+>>>>>>> upstream/master
    * @returns {Object} A platform object.
    */
   function parse(ua) {
@@ -296,6 +378,10 @@
       'WebPositive',
       'Opera Mini',
       'Opera',
+<<<<<<< HEAD
+=======
+      { 'label': 'Opera', 'pattern': 'OPR' },
+>>>>>>> upstream/master
       'Chrome',
       { 'label': 'Chrome Mobile', 'pattern': '(?:CriOS|CrMo)' },
       { 'label': 'Firefox', 'pattern': '(?:Firefox|Minefield)' },
@@ -374,7 +460,11 @@
      *
      * @private
      * @param {Array} guesses An array of guesses.
+<<<<<<< HEAD
      * @returns {String|Null} The detected layout engine.
+=======
+     * @returns {null|string} The detected layout engine.
+>>>>>>> upstream/master
      */
     function getLayout(guesses) {
       return reduce(guesses, function(result, guess) {
@@ -389,7 +479,11 @@
      *
      * @private
      * @param {Array} guesses An array of guesses.
+<<<<<<< HEAD
      * @returns {String|Null} The detected manufacturer.
+=======
+     * @returns {null|string} The detected manufacturer.
+>>>>>>> upstream/master
      */
     function getManufacturer(guesses) {
       return reduce(guesses, function(result, value, key) {
@@ -407,7 +501,11 @@
      *
      * @private
      * @param {Array} guesses An array of guesses.
+<<<<<<< HEAD
      * @returns {String|Null} The detected browser name.
+=======
+     * @returns {null|string} The detected browser name.
+>>>>>>> upstream/master
      */
     function getName(guesses) {
       return reduce(guesses, function(result, guess) {
@@ -422,7 +520,11 @@
      *
      * @private
      * @param {Array} guesses An array of guesses.
+<<<<<<< HEAD
      * @returns {String|Null} The detected OS name.
+=======
+     * @returns {null|string} The detected OS name.
+>>>>>>> upstream/master
      */
     function getOS(guesses) {
       return reduce(guesses, function(result, guess) {
@@ -456,6 +558,10 @@
             .replace(/Macintosh/, 'Mac OS')
             .replace(/_PowerPC/i, ' OS')
             .replace(/(OS X) [^ \d]+/i, '$1')
+<<<<<<< HEAD
+=======
+            .replace(/Mac (OS X)/, '$1')
+>>>>>>> upstream/master
             .replace(/\/(\d)/, ' $1')
             .replace(/_/g, '.')
             .replace(/(?: BePC|[ .]*fc[ \d.]+)$/i, '')
@@ -471,7 +577,11 @@
      *
      * @private
      * @param {Array} guesses An array of guesses.
+<<<<<<< HEAD
      * @returns {String|Null} The detected product name.
+=======
+     * @returns {null|string} The detected product name.
+>>>>>>> upstream/master
      */
     function getProduct(guesses) {
       return reduce(guesses, function(result, guess) {
@@ -500,7 +610,11 @@
      *
      * @private
      * @param {Array} patterns An array of UA patterns.
+<<<<<<< HEAD
      * @returns {String|Null} The detected version.
+=======
+     * @returns {null|string} The detected version.
+>>>>>>> upstream/master
      */
     function getVersion(patterns) {
       return reduce(patterns, function(result, pattern) {
@@ -516,7 +630,11 @@
      *
      * @name toString
      * @memberOf platform
+<<<<<<< HEAD
      * @returns {String} Returns `platform.description` if available, else an empty string.
+=======
+     * @returns {string} Returns `platform.description` if available, else an empty string.
+>>>>>>> upstream/master
      */
     function toStringPlatform() {
       return this.description || '';
@@ -552,7 +670,11 @@
     }
     // detect Android browsers
     else if (manufacturer && manufacturer != 'Google' &&
+<<<<<<< HEAD
         /Chrome|Vita/.test(name + ';' + product)) {
+=======
+        ((/Chrome/.test(name) && !/Mobile Safari/.test(ua)) || /Vita/.test(product))) {
+>>>>>>> upstream/master
       name = 'Android Browser';
       os = /Android/.test(os) ? os : 'Android';
     }
@@ -572,7 +694,11 @@
     // detect non-Opera versions (order is important)
     if (!version) {
       version = getVersion([
+<<<<<<< HEAD
         '(?:Cloud9|CriOS|CrMo|Opera ?Mini|Raven|Silk(?!/[\\d.]+$))',
+=======
+        '(?:Cloud9|CriOS|CrMo|Opera ?Mini|OPR|Raven|Silk(?!/[\\d.]+$))',
+>>>>>>> upstream/master
         'Version',
         qualify(name),
         '(?:Firefox|Minefield|NetFront)'
@@ -581,25 +707,43 @@
     // detect stubborn layout engines
     if (layout == 'iCab' && parseFloat(version) > 3) {
       layout = ['WebKit'];
+<<<<<<< HEAD
     } else if (data =
         /Opera/.test(name) && 'Presto' ||
         /\b(?:Midori|Nook|Safari)\b/i.test(ua) && 'WebKit' ||
         !layout && /\bMSIE\b/i.test(ua) && (/^Mac/.test(os) ? 'Tasman' : 'Trident')) {
+=======
+    } else if ((data =
+          /Opera/.test(name) && (/OPR/.test(ua) ? 'Blink' : 'Presto') ||
+          /\b(?:Midori|Nook|Safari)\b/i.test(ua) && 'WebKit' ||
+          !layout && /\bMSIE\b/i.test(ua) && (os == 'Mac OS' ? 'Tasman' : 'Trident')
+        )) {
+>>>>>>> upstream/master
       layout = [data];
     }
     // leverage environment features
     if (useFeatures) {
       // detect server-side environments
       // Rhino has a global function while others have a global object
+<<<<<<< HEAD
       if (isHostType(window, 'global')) {
+=======
+      if (isHostType(root, 'global')) {
+>>>>>>> upstream/master
         if (java) {
           data = java.lang.System;
           arch = data.getProperty('os.arch');
           os = os || data.getProperty('os.name') + ' ' + data.getProperty('os.version');
         }
+<<<<<<< HEAD
         if (typeof exports == 'object' && exports) {
           // if `thisBinding` is the [ModuleScope]
           if (thisBinding == oldWin && typeof system == 'object' && (data = [system])[0]) {
+=======
+        if (freeExports) {
+          // if `thisBinding` is the [ModuleScope]
+          if (thisBinding == oldRoot && typeof system == 'object' && (data = [system])[0]) {
+>>>>>>> upstream/master
             os || (os = data[0].os || null);
             try {
               data[1] = require('ringo/engine').version;
@@ -610,23 +754,44 @@
                 name = 'Narwhal';
               }
             }
+<<<<<<< HEAD
           } else if (typeof process == 'object' && (data = process)) {
+=======
+          }
+          else if (typeof process == 'object' && (data = process)) {
+>>>>>>> upstream/master
             name = 'Node.js';
             arch = data.arch;
             os = data.platform;
             version = /[\d.]+/.exec(data.version)[0];
           }
+<<<<<<< HEAD
         } else if (getClassOf(window.environment) == 'Environment') {
+=======
+          else if (rhino) {
+            name = 'Rhino';
+          }
+        }
+        else if (rhino) {
+>>>>>>> upstream/master
           name = 'Rhino';
         }
       }
       // detect Adobe AIR
+<<<<<<< HEAD
       else if (getClassOf(data = window.runtime) == 'ScriptBridgingProxyObject') {
+=======
+      else if (getClassOf((data = root.runtime)) == 'ScriptBridgingProxyObject') {
+>>>>>>> upstream/master
         name = 'Adobe AIR';
         os = data.flash.system.Capabilities.os;
       }
       // detect PhantomJS
+<<<<<<< HEAD
       else if (getClassOf(data = window.phantom) == 'RuntimeObject') {
+=======
+      else if (getClassOf((data = root.phantom)) == 'RuntimeObject') {
+>>>>>>> upstream/master
         name = 'PhantomJS';
         version = (data = data.version || null) && (data.major + '.' + data.minor + '.' + data.patch);
       }
@@ -646,9 +811,16 @@
     }
     // detect prerelease phases
     if (version && (data =
+<<<<<<< HEAD
         /(?:[ab]|dp|pre|[ab]\d+pre)(?:\d+\+?)?$/i.exec(version) ||
         /(?:alpha|beta)(?: ?\d)?/i.exec(ua + ';' + (useFeatures && nav.appMinorVersion)) ||
         /\bMinefield\b/i.test(ua) && 'a')) {
+=======
+          /(?:[ab]|dp|pre|[ab]\d+pre)(?:\d+\+?)?$/i.exec(version) ||
+          /(?:alpha|beta)(?: ?\d)?/i.exec(ua + ';' + (useFeatures && nav.appMinorVersion)) ||
+          /\bMinefield\b/i.test(ua) && 'a'
+        )) {
+>>>>>>> upstream/master
       prerelease = /b/i.test(data) ? 'beta' : 'alpha';
       version = version.replace(RegExp(data + '\\+?$'), '') +
         (prerelease == 'beta' ? beta : alpha) + (/\d+\+?/.exec(data) || '');
@@ -678,7 +850,11 @@
       description.unshift('desktop mode');
     }
     // add mobile postfix
+<<<<<<< HEAD
     else if ((name == 'IE' || name && !product && !/Browser|Mobi/.test(name)) &&
+=======
+    else if ((name == 'Chrome' || name == 'IE' || name && !product && !/Browser|Mobi/.test(name)) &&
+>>>>>>> upstream/master
         (os == 'Windows CE' || /Mobi/i.test(ua))) {
       name += ' Mobile';
     }
@@ -689,8 +865,14 @@
     // detect BlackBerry OS version
     // http://docs.blackberry.com/en/developers/deliverables/18169/HTTP_headers_sent_by_BB_Browser_1234911_11.jsp
     else if (/BlackBerry/.test(product) && (data =
+<<<<<<< HEAD
         (RegExp(product.replace(/ +/g, ' *') + '/([.\\d]+)', 'i').exec(ua) || 0)[1] ||
         version)) {
+=======
+          (RegExp(product.replace(/ +/g, ' *') + '/([.\\d]+)', 'i').exec(ua) || 0)[1] ||
+          version
+        )) {
+>>>>>>> upstream/master
       os = 'Device Software ' + data;
       version = null;
     }
@@ -705,7 +887,11 @@
             /Windows XP/.test(os) && version > 8 ||
             version == 8 && !/Trident/.test(ua)
           ))
+<<<<<<< HEAD
         ) && !reOpera.test(data = parse.call(forOwn, ua.replace(reOpera, '') + ';')) && data.name) {
+=======
+        ) && !reOpera.test((data = parse.call(forOwn, ua.replace(reOpera, '') + ';'))) && data.name) {
+>>>>>>> upstream/master
 
       // when "indentifying", the UA contains both Opera and the other browser's name
       data = 'ing as ' + data.name + ((data = data.version) ? ' ' + data : '');
@@ -785,7 +971,11 @@
       name = 'Chrome Mobile';
       version = null;
 
+<<<<<<< HEAD
       if (/Mac OS X/.test(os)) {
+=======
+      if (/OS X/.test(os)) {
+>>>>>>> upstream/master
         manufacturer = 'Apple';
         os = 'iOS 4.3+';
       } else {
@@ -793,7 +983,11 @@
       }
     }
     // strip incorrect OS versions
+<<<<<<< HEAD
     if (version && version.indexOf(data = /[\d.]+$/.exec(os)) == 0 &&
+=======
+    if (version && version.indexOf((data = /[\d.]+$/.exec(os))) == 0 &&
+>>>>>>> upstream/master
         ua.indexOf('/' + data + '-') > -1) {
       os = trim(os.replace(data, ''));
     }
@@ -857,7 +1051,11 @@
        * The browser/environment version.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'version': name && version && (description.unshift(version), version),
 
@@ -865,7 +1063,11 @@
        * The name of the browser/environment.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'name': name && (description.unshift(name), name),
 
@@ -885,7 +1087,11 @@
            * The CPU architecture the OS is built for.
            *
            * @memberOf platform.os
+<<<<<<< HEAD
            * @type String|Null
+=======
+           * @type number|null
+>>>>>>> upstream/master
            */
           'architecture': null,
 
@@ -893,7 +1099,11 @@
            * The family of the OS.
            *
            * @memberOf platform.os
+<<<<<<< HEAD
            * @type String|Null
+=======
+           * @type string|null
+>>>>>>> upstream/master
            */
           'family': null,
 
@@ -901,7 +1111,11 @@
            * The version of the OS.
            *
            * @memberOf platform.os
+<<<<<<< HEAD
            * @type String|Null
+=======
+           * @type string|null
+>>>>>>> upstream/master
            */
           'version': null,
 
@@ -909,7 +1123,11 @@
            * Returns the OS string.
            *
            * @memberOf platform.os
+<<<<<<< HEAD
            * @returns {String} The OS string.
+=======
+           * @returns {string} The OS string.
+>>>>>>> upstream/master
            */
           'toString': function() { return 'null'; }
         },
@@ -918,7 +1136,11 @@
        * The platform description.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'description': description.length ? description.join(' ') : ua,
 
@@ -926,7 +1148,11 @@
        * The name of the browser layout engine.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'layout': layout && layout[0],
 
@@ -934,7 +1160,11 @@
        * The name of the product's manufacturer.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'manufacturer': manufacturer,
 
@@ -942,7 +1172,11 @@
        * The alpha/beta release indicator.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'prerelease': prerelease,
 
@@ -950,7 +1184,11 @@
        * The name of the product hosting the browser.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'product': product,
 
@@ -958,7 +1196,11 @@
        * The browser's user agent string.
        *
        * @memberOf platform
+<<<<<<< HEAD
        * @type String|Null
+=======
+       * @type string|null
+>>>>>>> upstream/master
        */
       'ua': ua,
 
@@ -973,7 +1215,11 @@
   /*--------------------------------------------------------------------------*/
 
   // expose platform
+<<<<<<< HEAD
   // some AMD build optimizers, like r.js, check for specific condition patterns like the following:
+=======
+  // some AMD build optimizers, like r.js, check for condition patterns like the following:
+>>>>>>> upstream/master
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
     // define as an anonymous module so, through path mapping, it can be aliased
     define(function() {
@@ -981,7 +1227,11 @@
     });
   }
   // check for `exports` after `define` in case a build optimizer adds an `exports` object
+<<<<<<< HEAD
   else if (freeExports) {
+=======
+  else if (freeExports && !freeExports.nodeType) {
+>>>>>>> upstream/master
     // in Narwhal, Node.js, or RingoJS
     forOwn(parse(), function(value, key) {
       freeExports[key] = value;
@@ -989,8 +1239,12 @@
   }
   // in a browser or Rhino
   else {
+<<<<<<< HEAD
     // use square bracket notation so Closure Compiler won't munge `platform`
     // http://code.google.com/closure/compiler/docs/api-tutorial3.html#export
     window['platform'] = parse();
+=======
+    root.platform = parse();
+>>>>>>> upstream/master
   }
 }(this));
